@@ -55,11 +55,12 @@ require plugin_dir_path( __FILE__ ) . 'includes/class-wp_content_generator.php';
 
 add_action("wp_loaded", "wp_content_generatorAllLoaded");
 function wp_content_generatorAllLoaded(){
-require_once plugin_dir_path( __FILE__ ) . 'includes/functions.php';
-require_once plugin_dir_path( __FILE__ ) . 'includes/functions-posts.php';
-require_once plugin_dir_path( __FILE__ ) . 'includes/functions-users.php';
-require_once plugin_dir_path( __FILE__ ) . 'includes/functions-products.php';
-require_once plugin_dir_path( __FILE__ ) . 'includes/functions-thumbnails.php';
+    require_once plugin_dir_path( __FILE__ ) . 'includes/functions.php';
+    require_once plugin_dir_path( __FILE__ ) . 'includes/functions-posts.php';
+    require_once plugin_dir_path( __FILE__ ) . 'includes/functions-users.php';
+    require_once plugin_dir_path( __FILE__ ) . 'includes/functions-products.php';
+    require_once plugin_dir_path( __FILE__ ) . 'includes/functions-thumbnails.php';
+}
 
 /**
  * Begins execution of the plugin.
