@@ -1,15 +1,15 @@
 <div class="wrap wp_content_generator-about-wrap">
 	<h1>WP Content Generator <?=wp_content_generator_PLUGIN_NAME_VERSION?></h1>
 	<div class="wp_content_generator-about-text">
-		Thank you for choosing WP Content Generator! We hope that your experience with our plugin makes creating <b>Dummy users, Dummy posts & custom posts, Dummy woocommerce products</b> quick and easy.
+		Thank you for choosing WP Content Generator! We hope that your experience with our plugin makes creating <b>users, posts & custom posts, woocommerce products</b> quick and easy.
 	</div>
 	<h2>What our plugin provides?</h2>
 	<div class="wp_content_generator-about-integrations">
 		<div class="wp_content_generator-feature feature-section col three-col">
 			<div class="col wp_content_generator-col wp_content_generatorPanelWrapper">
-				<div class="wp_content_generatorPanelHeading">Dummy Users</div>
+				<div class="wp_content_generatorPanelHeading">Users</div>
 				<div class="wp_content_generatorPanelBody">
-					<p>As the name, "Dummy users" sounds like something illegal but actually its not. The main purpose of generating Dummy users is to check the functionality which is related to multiple users.</p>
+					<p>As the name, "users" sounds like something illegal but actually its not. The main purpose of generating users is to check the functionality which is related to multiple users.</p>
 					<p class="wp_content_generatorLinkWrapper">
                         <a href="#">Generate users</a>
 						<!-- <a href="?page=wp_content_generator-users">Generate users</a> -->
@@ -17,7 +17,7 @@
 				</div>
 			</div>
 			<div class="col wp_content_generator-col wp_content_generatorPanelWrapper">
-				<div class="wp_content_generatorPanelHeading">Dummy Posts/Custom Posts</div>
+				<div class="wp_content_generatorPanelHeading">Posts/Custom Posts</div>
 				<div class="wp_content_generatorPanelBody">
 					<p>You can generate WordPress posts and custom posts. The purpose is again the same that it is for checking functionality like load more posts or filters etc.</p>
 					<p class="wp_content_generatorLinkWrapper">
@@ -28,7 +28,7 @@
 			<div class="col wp_content_generator-col wp_content_generatorPanelWrapper">
 				<div class="wp_content_generatorPanelHeading">Woocommerce products</div>
 				<div class="wp_content_generatorPanelBody">
-					<p>Woocommerce dummy products are very important for e-commerce theme development. You can generate n number of woocommerce products using this plugin.</p>
+					<p>Woocommerce products are very important for e-commerce theme development. You can generate n number of woocommerce products using this plugin.</p>
 					<p class="wp_content_generatorLinkWrapper">
                         <a href="#">Generate products</a>
 						<!-- <a href="?page=wp_content_generator-products">Generate products</a> -->

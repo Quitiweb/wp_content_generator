@@ -17,7 +17,7 @@
 		?>
 	    <h2 class="nav-tab-wrapper">
 		    <a href="?page=wp_content_generator-posts&tab=generate_posts" class="nav-tab <?php echo $active_tab == 'generate_posts' ? 'nav-tab-active' : ''; ?>">Generate Posts</a>
-		    <a href="?page=wp_content_generator-posts&tab=view_posts" class="nav-tab <?php echo $active_tab == 'view_posts' ? 'nav-tab-active' : ''; ?>">View Fake Posts</a>
+		    <a href="?page=wp_content_generator-posts&tab=view_posts" class="nav-tab <?php echo $active_tab == 'view_posts' ? 'nav-tab-active' : ''; ?>">View Posts</a>
 		</h2>
 	</div>
 	<div class="wp_content_generator-pagebody">

@@ -56,7 +56,7 @@
 		// manage data from adminbar links
 
 
-		//var data_val = $('#wp_content_generatorGenPostForm').serialize();
+		// var data_val = $('#wp_content_generatorGenPostForm').serialize();
 		$('#wp_content_generatorListPostsTbl').DataTable();
 		$('#wp_content_generatorListProductsTbl').DataTable();
 		var is_sending = false,
@@ -70,7 +70,7 @@
 			var $this = $(this); // Cache this
 			// call ajax here
 			$('.dcsLoader').show();
-			//$('.remaining_notification').html('').html('<p>Post generator initialized. Waiting for the first response...</p>');
+			// $('.remaining_notification').html('').html('<p>Post generator initialized. Waiting for the first response...</p>');
 			wp_content_generator_generatePostsLoop($this);
 		});
 

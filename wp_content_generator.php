@@ -40,7 +40,7 @@ define("wp_content_generator_PLUGIN_NAME_VERSION", "3.0.0" );
 define("wp_content_generator_PLUGIN_BASE_URL", plugin_basename( __FILE__ ));
 define("wp_content_generator_PLUGIN_BASE_URI", plugin_dir_path( __FILE__ ));
 define("wp_content_generator_PLUGIN_DIR", plugin_basename( __DIR__ ));
-define("wp_content_generator_PLUGIN_NAME", "WP Dummy Content Generator");
+define("wp_content_generator_PLUGIN_NAME", "WP Content Generator");
 /**
  * The code that runs during plugin activation.
  * This action is documented in includes/class-wp_content_generator-activator.php

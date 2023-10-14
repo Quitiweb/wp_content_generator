@@ -1,7 +1,9 @@
 <?php
+
 function wp_content_generatorThumbnails(){
     include( WP_PLUGIN_DIR.'/'.plugin_dir_path(wp_content_generator_PLUGIN_BASE_URL) . 'admin/template/wp_content_generator-thumbnails.php');
 }
+
 function wp_content_generatorGetFakeThumbnailsList(){
     $args = array(
         'posts_per_page' => -1,
@@ -19,6 +21,7 @@ function wp_content_generatorGetFakeThumbnailsList(){
     $wp_content_generatorQueryData = new WP_Query( $args );
     return $wp_content_generatorQueryData;
 }
+
 // wp_content_generatorDeleteFakeThumbnails
 function wp_content_generatorDeleteFakeThumbnails(){
     $wp_content_generatorQueryData = wp_content_generatorGetFakeThumbnailsList();
@@ -40,12 +43,14 @@ function wp_content_generatorDeleteThumbnails () {
     echo json_encode(array('status' => 'success', 'message' => 'Data deleted successfully.') );
     die();
 }
+
 add_action("wp_ajax_wp_content_generatorDeleteThumbnails", "wp_content_generatorDeleteThumbnails");
 
 /**
 * Action hook to delete thumbnails 
 */
 add_action('admin_post_wp_content_generator_deletethumbnails', 'wp_content_generator_deletethumbnails');
+
 function wp_content_generator_deletethumbnails(){
     $request  = $_REQUEST;
     if ( !current_user_can('manage_options') || ! wp_verify_nonce( $request['nonce'], 'wpdcg-ajax-nonce' ) ) {

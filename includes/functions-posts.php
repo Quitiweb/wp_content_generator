@@ -1,7 +1,54 @@
 <?php
 
+function debug_to_console($data){
+    $output = $data;
+    if (is_array($output)){
+        $output = implode(',', $output);
+	}
+    echo "<script>console.log('Debug Objects: " . $output . "' );</script>";
+}
+
+function slugify($text, string $divider = '-'){
+    // replace non letter or digits by divider
+    $text = preg_replace('~[^\pL\d]+~u', $divider, $text);
+
+    // transliterate
+    $text = iconv('utf-8', 'us-ascii//TRANSLIT', $text);
+
+    // remove unwanted characters
+    $text = preg_replace('~[^-\w]+~', '', $text);
+
+    // trim
+    $text = trim($text, $divider);
+
+    // remove duplicate divider
+    $text = preg_replace('~-+~', $divider, $text);
+
+    // lowercase
+    $text = strtolower($text);
+
+    if (empty($text)) {
+        return 'n-a';
+    }
+
+    return $text;
+}
+
 function wp_content_generatorPosts(){
     include( WP_PLUGIN_DIR.'/'.plugin_dir_path(wp_content_generator_PLUGIN_BASE_URL) . 'admin/template/wp_content_generator-posts.php');
+}
+
+function wp_content_generatorGetCategories(){
+    $posttypes_array = array();
+	$categories = get_categories(array(
+		'hide_empty' => 0,
+	));
+	foreach($categories as $cat) {
+		$sname = slugify($cat->name);
+		$posttypes_array[$sname] = $cat->name;
+	}
+	
+    return $posttypes_array;
 }
 
 function wp_content_generatorGetPostTypes(){
@@ -22,10 +69,10 @@ function wp_content_generatorGetPostTypes(){
     }
     if ( class_exists( 'WooCommerce' ) ) {
         unset($posttypes_array['product']); //exclude 'product' post type as we are providing separate section for products
-    } 
+    }
     return $posttypes_array;
 }
-
+/*
 function wp_content_generator_Generate_TaxTerms( $wp_content_generatorPostID,$posttype){
     $taxonomies = wp_content_generatorGetTaxonomies($posttype);
     if(!empty($taxonomies)){
@@ -55,7 +102,7 @@ function wp_content_generator_Generate_TaxTerms( $wp_content_generatorPostID,$po
         }
     }
 }
-
+*/
 function wp_content_generator_generateFiveTerms($taxonomiesvalue){
     // $faker->words(5);
     include( WP_PLUGIN_DIR.'/'.plugin_dir_path(wp_content_generator_PLUGIN_BASE_URL) . 'Faker-main/vendor/autoload.php');
@@ -79,14 +126,18 @@ function wp_content_generatorGetTaxonomies($post_type='post'){
     return $taxonomies;
 }
 
+/**
+* Main function that creates the Posts 
+*/
 function wp_content_generatorGeneratePosts(
-    $posttype='post',
+    $category='software',
+    $categories='',
     $wp_content_generatorIsThumbnail='off',
     $wp_content_generatorIsTaxonomies='off',
     $postDateFrom='',
     $postDateTo=''
 ){
-
+    $posttype = 'post';
     if($postDateFrom == ''){
         $postDateFrom = date("Y-m-d");
     }
@@ -94,43 +145,58 @@ function wp_content_generatorGeneratePosts(
         $postDateTo = date("Y-m-d");
     }
 
-    // include( WP_PLUGIN_DIR.'/'.plugin_dir_path(wp_content_generator_PLUGIN_BASE_URL) . 'Faker-main/vendor/autoload.php');
-    
-    // use the factory to create a Faker\Generator instance
-    // $wp_content_generatorFaker = Faker\Factory::create();
+    // URL de la API que devuelve el JSON con los datos de la entrada
+    $base_url = 'https://post.quitiweb.com/post/generate/';
+    $api_url = sprintf("%s?%s", $base_url, http_build_query(array("category" => $category)));
 
-    $wp_content_generatorPostTitle = "Test Title v1";
-    $wp_content_generatorPostDescription = "<html><head></head><body><h2><strong>¿Qué es la arqueología?</strong></h2><p>La <em>arqueología</em> es una ciencia social que estudia los cambios que se han producido en sociedades pasadas a través del análisis de lo que estas han dejado atrás, principalmente restos materiales como herramientas, cerámica, edificios, restos humanos, etc.</p></body></html>";
-    // $wp_content_generatorPostDescription .= $wp_content_generatorFaker->text($maxNbChars = 700);
+    // Obtiene los datos de la API en formato JSON
+    $ch = curl_init();
+    curl_setopt($ch, CURLOPT_URL, $api_url);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    $response = curl_exec($ch);
+    curl_close($ch);
+
+    // Decodifica los datos JSON obtenidos
+    $data = json_decode($response, true);
+    $title = $data['title'];
+    $description = $data['description'];
+
+    $wp_content_generatorPostTitle = $title;
+    $wp_content_generatorPostDescription = $description;
+
+    // Genera la imagen principal del post
     $rand_num = rand(1,15);
     $wp_content_generatorPostThumb = WP_PLUGIN_DIR.'/'.plugin_dir_path(wp_content_generator_PLUGIN_BASE_URL) . 'images/posts/'.$rand_num.".jpg";
 
-    // create post
+    // Create post
     $postDate = wp_content_generatorRandomDate($postDateFrom,$postDateTo);
     $wp_content_generatorPostArray = array(
-      'post_title'    => wp_strip_all_tags( $wp_content_generatorPostTitle ),
-      'post_content'  => $wp_content_generatorPostDescription,
-      'post_status'   => 'publish',
-      'post_author'   => 1,
-      'post_date'   => $postDate,
-      'post_type' => $posttype
+      'post_title' => wp_strip_all_tags( $wp_content_generatorPostTitle ),
+      'post_content' => $wp_content_generatorPostDescription,
+      'post_status' => 'private',
+      'post_author' => 3,
+      'post_date' => $postDate,
+      'post_type' => $posttype,
+      'post_category' => $categories
     );
 
-    // insert the post into the database
+    // Insert the post into the database
     $wp_content_generatorPostID = wp_insert_post( $wp_content_generatorPostArray );
     if($wp_content_generatorPostID){
-        update_post_meta($wp_content_generatorPostID,'wp_content_generator_post','true');
+        update_post_meta($wp_content_generatorPostID, 'wp_content_generator_post','true');
+        /*
         if($wp_content_generatorIsThumbnail=='on')
-        wp_content_generator_Generate_Featured_Image( $wp_content_generatorPostThumb,$wp_content_generatorPostID);
+            wp_content_generator_Generate_Featured_Image( $wp_content_generatorPostThumb, $wp_content_generatorPostID );
         if($wp_content_generatorIsTaxonomies=='on')
-        wp_content_generator_Generate_TaxTerms( $wp_content_generatorPostID,$posttype);
+            wp_content_generator_Generate_TaxTerms( $wp_content_generatorPostID, $posttype );
+        */
         return 'success';
     }else{
         return 'error';
     }
 
 }
-
+/*
 function wp_content_generator_Generate_Featured_Image( $image_url, $post_id ){
     $upload_dir = wp_upload_dir();
     $image_data = file_get_contents($image_url);
@@ -152,11 +218,11 @@ function wp_content_generator_Generate_Featured_Image( $image_url, $post_id ){
     $attach_id = wp_insert_attachment( $attachment, $file, $post_id );
     require_once(ABSPATH . 'wp-admin/includes/image.php');
     $attach_data = wp_generate_attachment_metadata( $attach_id, $file );
-    $res1= wp_update_attachment_metadata( $attach_id, $attach_data );
+    $res1 = wp_update_attachment_metadata( $attach_id, $attach_data );
     update_post_meta($attach_id, 'wp_content_generator_attachment','true');
-    $res2= set_post_thumbnail( $post_id, $attach_id );
+    $res2 = set_post_thumbnail( $post_id, $attach_id );
 }
-
+*/
 
 function wp_content_generatorAjaxGenPosts () {
     if ( !current_user_can('manage_options') || !wp_verify_nonce( $_POST['nonce'], 'wpdcg-ajax-nonce' ) ) {
@@ -164,7 +230,7 @@ function wp_content_generatorAjaxGenPosts () {
         die();
     }
     $wp_content_generatorIsThumbnail = 'off';
-    $post_type = sanitize_text_field($_POST['wp_content_generator-posttype']);
+    $post_type = 'post';
     $remaining_posts = sanitize_text_field($_POST['remaining_posts']);
     $post_count = sanitize_text_field($_POST['wp_content_generator-post_count']);
 
@@ -173,7 +239,6 @@ function wp_content_generatorAjaxGenPosts () {
     }else{
         $loopLimit = $remaining_posts;
     }
-
 
     $wp_content_generatorIsThumbnail = sanitize_text_field($_POST['wp_content_generator-thumbnail']);
     $wp_content_generatorIsTaxonomies = sanitize_text_field($_POST['wp_content_generator-taxonomies']);
