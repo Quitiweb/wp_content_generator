@@ -23,7 +23,7 @@
         <tr valign="top">
 	        <th scope="row">Categories</th>
 	        <td>
-	        	<select name="wp_content_generator-categories" multiple>
+	        	<select name="wp_content_generator-categories[]" multiple>
 	        		<?php foreach ($wp_content_generatorPosCats as $key => $value): ?>
 	        			<option value="<?php echo $key; ?>"><?php echo $value; ?></option>
 	        		<?php endforeach; ?>

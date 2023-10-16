@@ -130,8 +130,8 @@ function wp_content_generatorGetTaxonomies($post_type='post'){
 * Main function that creates the Posts 
 */
 function wp_content_generatorGeneratePosts(
+    array $categories,
     $category='software',
-    $categories='',
     $wp_content_generatorIsThumbnail='off',
     $wp_content_generatorIsTaxonomies='off',
     $postDateFrom='',
@@ -226,11 +226,13 @@ function wp_content_generator_Generate_Featured_Image( $image_url, $post_id ){
 
 function wp_content_generatorAjaxGenPosts () {
     if ( !current_user_can('manage_options') || !wp_verify_nonce( $_POST['nonce'], 'wpdcg-ajax-nonce' ) ) {
-        echo json_encode(array('status' => 'error', 'message' => 'Un Authorized Access.') );
+        echo json_encode(array('status' => 'error', 'message' => 'Unauthorized Access.') );
         die();
     }
     $wp_content_generatorIsThumbnail = 'off';
-    $post_type = 'post';
+    $wp_content_generatorIsTaxonomies = 'off';
+    $category = sanitize_text_field($_POST['wp_content_generator-category']);
+    $categories = $_POST['wp_content_generator-categories'];
     $remaining_posts = sanitize_text_field($_POST['remaining_posts']);
     $post_count = sanitize_text_field($_POST['wp_content_generator-post_count']);
 
@@ -240,14 +242,21 @@ function wp_content_generatorAjaxGenPosts () {
         $loopLimit = $remaining_posts;
     }
 
-    $wp_content_generatorIsThumbnail = sanitize_text_field($_POST['wp_content_generator-thumbnail']);
-    $wp_content_generatorIsTaxonomies = sanitize_text_field($_POST['wp_content_generator-taxonomies']);
+    // $wp_content_generatorIsThumbnail = sanitize_text_field($_POST['wp_content_generator-thumbnail']);
+    // $wp_content_generatorIsTaxonomies = sanitize_text_field($_POST['wp_content_generator-taxonomies']);
 
     $postFromDate = sanitize_text_field($_POST['wp_content_generator-post_from']);
     $postToDate = sanitize_text_field($_POST['wp_content_generator-post_to']);
     $counter = 0;
     for ($i=0; $i < $loopLimit ; $i++) { 
-        $generationStatus = wp_content_generatorGeneratePosts($post_type,$wp_content_generatorIsThumbnail,$wp_content_generatorIsTaxonomies,$postFromDate,$postToDate);
+        $generationStatus = wp_content_generatorGeneratePosts(
+            $categories,
+            $category,
+            $wp_content_generatorIsThumbnail,
+            $wp_content_generatorIsTaxonomies,
+            $postFromDate,
+            $postToDate
+        );
         if($generationStatus == 'success'){
             $counter++;
         }
