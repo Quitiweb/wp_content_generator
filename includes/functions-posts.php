@@ -38,7 +38,7 @@ function wp_content_generatorPosts(){
     include( WP_PLUGIN_DIR.'/'.plugin_dir_path(wp_content_generator_PLUGIN_BASE_URL) . 'admin/template/wp_content_generator-posts.php');
 }
 
-function wp_content_generatorGetCategories(){
+function wp_content_generatorGetCategory(){
     $posttypes_array = array();
 	$categories = get_categories(array(
 		'hide_empty' => 0,
@@ -49,6 +49,25 @@ function wp_content_generatorGetCategories(){
 	}
 	
     return $posttypes_array;
+}
+
+function wp_content_generatorGetCategories(){
+	$categories = get_categories(array(
+        'type'        => 'post',
+        'child_of'    => 0,
+        'parent'      => '',
+        'orderby'     => 'name',
+        'order'       => 'ASC',
+        'hide_empty'  => false,
+        'hierarchical'=> 1,
+        'exclude'     => '',
+        'include'     => '',
+        'number'      => '',
+        'taxonomy'    => 'category',
+        'pad_counts'  => false
+	));
+	
+    return $categories;
 }
 
 function wp_content_generatorGetPostTypes(){

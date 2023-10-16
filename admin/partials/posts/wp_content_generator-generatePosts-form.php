@@ -1,3 +1,4 @@
+<?php $wp_content_generatorPosCategory = wp_content_generatorGetCategory(); ?>
 <?php $wp_content_generatorPosCats = wp_content_generatorGetCategories(); ?>
 
 <div class="wp_content_generator-success-msg" style="display: none;"></div>
@@ -13,7 +14,7 @@
 	        <th scope="row">Category for API call</th>
 	        <td>
 	        	<select name="wp_content_generator-category">
-	        		<?php foreach ($wp_content_generatorPosCats as $key => $value): ?>
+	        		<?php foreach ($wp_content_generatorPosCategory as $key => $value): ?>
 	        			<option value="<?php echo $key; ?>"><?php echo $value; ?></option>
 	        		<?php endforeach; ?>
 	        	</select>
@@ -24,9 +25,9 @@
 	        <th scope="row">Categories</th>
 	        <td>
 	        	<select name="wp_content_generator-categories[]" multiple>
-	        		<?php foreach ($wp_content_generatorPosCats as $key => $value): ?>
-	        			<option value="<?php echo $key; ?>"><?php echo $value; ?></option>
-	        		<?php endforeach; ?>
+	        		<?php foreach ($wp_content_generatorPosCats as $category):
+						echo '<option value="' . $category->term_id . '">' . $category->name . '</option>';
+	        		endforeach; ?>
 	        	</select>
 	        	<p class="description">Choose the WP post categories</p>
 	        </td>
