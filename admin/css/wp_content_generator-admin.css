@@ -8,7 +8,8 @@
     border: 2px solid #dc3232;
     border-radius: 0px 0px 5px 5px;
 }
-.wp_content_generatorLinkWrapper a {
+.wp_content_generatorLinkWrapper a,
+.wp_content_generatorLinkWrapper input {
     background: #dc3232;
     padding: 10px 20px;
     border-radius: 5px;

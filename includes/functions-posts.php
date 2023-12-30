@@ -168,9 +168,14 @@ function wp_content_generatorGeneratePosts(
     $base_url = 'https://post.quitiweb.com/post/generate/';
     $api_url = sprintf("%s?%s", $base_url, http_build_query(array("category" => $category)));
 
+    // Recupera el Token para autorizar las llamadas a la API
+    $api_key = get_option('wp_content_generator_api_key');
+    $authorization = "Authorization: Bearer " . $api_key;
+
     // Obtiene los datos de la API en formato JSON
     $ch = curl_init();
     curl_setopt($ch, CURLOPT_URL, $api_url);
+    curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json' , $authorization ));
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
     $response = curl_exec($ch);
     curl_close($ch);
@@ -348,4 +353,19 @@ function wp_content_generator_deleteposts(){
     }
     wp_content_generatorDeleteFakePosts();
     wp_redirect("admin.php?page=wp_content_generator-posts&tab=view_posts&status=success");
+}
+
+/**
+ * Action hook to save API Key
+ */
+add_action( 'admin_post_save_wp_content_generator_api_key', 'save_wp_content_generator_api_key' );
+
+function save_wp_content_generator_api_key() {
+    if ( isset( $_POST['wp_content_generator_api_key'] ) ) {
+        // Guarda la clave API en la base de datos
+        update_option( 'wp_content_generator_api_key', sanitize_text_field( $_POST['wp_content_generator_api_key'] ) );
+    }
+    // Redirige de vuelta a la página de administración
+    wp_redirect( $_SERVER['HTTP_REFERER'] );
+    exit;
 }

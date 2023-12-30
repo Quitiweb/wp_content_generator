@@ -9,14 +9,14 @@
  * that starts the plugin.
  *
  * @link              https://quitiweb.com
- * @since             1.0.0
+ * @since             1.0.0-beta
  * @package           wp_content_generator
  *
  * @wordpress-plugin
  * Plugin Name:       WP Content Generator
  * Plugin URI:        https://quitiweb.com
  * Description:       The "WP Content Generator" plugin is particularly useful for website administrators who want to quickly populate their WordPress site with AI generated content. It saves time and effort by automatically generating content that mimics real posts and pages, enabling you to focus on other aspects of website development or testing.
- * Version:           3.0.0
+ * Version:           1.3.0-beta
  * Author: Quiti Kites
  * Author URI: https://quitiweb.com/
  * License: GPL-2.0+
@@ -33,10 +33,10 @@ if ( ! defined( 'WPINC' ) ) {
 
 /**
  * Currently plugin version.
- * Start at version 1.0.0 and use SemVer - https://semver.org
+ * Start at version 1.0.0-beta and use SemVer - https://semver.org
  * Rename this for your plugin and update it as you release new versions.
 */
-define("wp_content_generator_PLUGIN_NAME_VERSION", "3.0.0" );
+define("wp_content_generator_PLUGIN_NAME_VERSION", "1.3.0-beta" );
 define("wp_content_generator_PLUGIN_BASE_URL", plugin_basename( __FILE__ ));
 define("wp_content_generator_PLUGIN_BASE_URI", plugin_dir_path( __FILE__ ));
 define("wp_content_generator_PLUGIN_DIR", plugin_basename( __DIR__ ));
@@ -72,8 +72,6 @@ add_action("wp_loaded", "wp_content_generatorAllLoaded");
 function wp_content_generatorAllLoaded(){
     require_once plugin_dir_path( __FILE__ ) . 'includes/functions.php';
     require_once plugin_dir_path( __FILE__ ) . 'includes/functions-posts.php';
-    // require_once plugin_dir_path( __FILE__ ) . 'includes/functions-users.php';
-    // require_once plugin_dir_path( __FILE__ ) . 'includes/functions-products.php';
     require_once plugin_dir_path( __FILE__ ) . 'includes/functions-thumbnails.php';
 }
 

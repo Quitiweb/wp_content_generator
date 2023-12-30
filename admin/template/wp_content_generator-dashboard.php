@@ -1,7 +1,7 @@
 <div class="wrap wp_content_generator-about-wrap">
 	<h1>WP Content Generator <?=wp_content_generator_PLUGIN_NAME_VERSION?></h1>
 	<div class="wp_content_generator-about-text">
-		Thank you for choosing WP Content Generator! We hope that your experience with our plugin makes creating <b>users, posts & custom posts, woocommerce products</b> quick and easy.
+		Thank you for choosing WP Content Generator! We hope that your experience with our plugin makes creating <b>users, posts & custom posts</b> quick and easy.
 	</div>
 	<h2>What our plugin provides?</h2>
 	<div class="wp_content_generator-about-integrations">
@@ -12,7 +12,6 @@
 					<p>As the name, "users" sounds like something illegal but actually its not. The main purpose of generating users is to check the functionality which is related to multiple users.</p>
 					<p class="wp_content_generatorLinkWrapper">
                         <a href="#">Generate users</a>
-						<!-- <a href="?page=wp_content_generator-users">Generate users</a> -->
 					</p>
 				</div>
 			</div>
@@ -26,13 +25,16 @@
 				</div>
 			</div>
 			<div class="col wp_content_generator-col wp_content_generatorPanelWrapper">
-				<div class="wp_content_generatorPanelHeading">Woocommerce products</div>
+				<div class="wp_content_generatorPanelHeading">Post Generator API Key</div>
 				<div class="wp_content_generatorPanelBody">
-					<p>Woocommerce products are very important for e-commerce theme development. You can generate n number of woocommerce products using this plugin.</p>
-					<p class="wp_content_generatorLinkWrapper">
-                        <a href="#">Generate products</a>
-						<!-- <a href="?page=wp_content_generator-products">Generate products</a> -->
-					</p>
+					<p>This is the key to use the Post Generator API. Ask your admin for a new API Key if you don't have one yet.</p>
+					<form action="<?php echo esc_url( admin_url('admin-post.php') ); ?>" method="post">
+            			<input type="hidden" name="action" value="save_wp_content_generator_api_key">
+            			<input type="text" id="wp_content_generator_api_key" name="wp_content_generator_api_key" value="<?php echo esc_attr( get_option('wp_content_generator_api_key') ); ?>"/>
+						<p class="wp_content_generatorLinkWrapper">
+            				<input type="submit" value="Save API Key"/>
+						</p>
+        			</form>
 				</div>
 			</div>
 		</div>
