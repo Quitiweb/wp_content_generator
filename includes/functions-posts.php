@@ -151,6 +151,7 @@ function wp_content_generatorGetTaxonomies($post_type='post'){
 function wp_content_generatorGeneratePosts(
     array $categories,
     $category='software',
+    $asin='',
     $wp_content_generatorIsThumbnail='off',
     $wp_content_generatorIsTaxonomies='off',
     $postDateFrom='',
@@ -163,10 +164,19 @@ function wp_content_generatorGeneratePosts(
     if($postDateTo == ''){
         $postDateTo = date("Y-m-d");
     }
+    $host_aws = 'http://ec2-15-188-189-171.eu-west-3.compute.amazonaws.com';
+    $host_dh = 'https://post.quitiweb.com';
 
     // URL de la API que devuelve el JSON con los datos de la entrada
-    $base_url = 'https://post.quitiweb.com/post/generate/';
-    $api_url = sprintf("%s?%s", $base_url, http_build_query(array("category" => $category)));
+    // Llamamos al endpoint de Amazon si viene el ASIN del formulario
+    if (trim($asin) === ''){
+        $base_url = sprintf("%s/%s", $host_aws, 'post/generate/');
+        $api_url = sprintf("%s?%s", $base_url, http_build_query(array("category" => $category)));
+    }else{
+        $base_url = sprintf("%s/%s", $host_aws, 'post/aws/');
+        $api_url = sprintf("%s?%s", $base_url, http_build_query(array("category" => $category)));
+        $api_url .= sprintf("&asin=%s", $asin);
+    }
 
     // Recupera el Token para autorizar las llamadas a la API
     $api_key = get_option('wp_content_generator_api_key');
@@ -257,6 +267,7 @@ function wp_content_generatorAjaxGenPosts () {
     $wp_content_generatorIsTaxonomies = 'off';
     $category = sanitize_text_field($_POST['wp_content_generator-category']);
     $categories = $_POST['wp_content_generator-categories'];
+    $asin = sanitize_text_field($_POST['wp_content_generator-post_asin']);
     $remaining_posts = sanitize_text_field($_POST['remaining_posts']);
     $post_count = sanitize_text_field($_POST['wp_content_generator-post_count']);
 
@@ -276,6 +287,7 @@ function wp_content_generatorAjaxGenPosts () {
         $generationStatus = wp_content_generatorGeneratePosts(
             $categories,
             $category,
+            $asin,
             $wp_content_generatorIsThumbnail,
             $wp_content_generatorIsTaxonomies,
             $postFromDate,

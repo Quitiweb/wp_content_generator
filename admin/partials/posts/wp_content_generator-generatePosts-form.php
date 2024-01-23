@@ -32,6 +32,15 @@
 	        	<p class="description">Choose the WP post categories</p>
 	        </td>
         </tr>
+
+        <tr valign="top">
+	        <th scope="row">Amazon SIN</th>
+	        <td>
+	        	<input type="text" name="wp_content_generator-post_asin" class="wp_content_generator-post_count"  placeholder="ASIN" />
+	        	<p class="description">Leave blank to call standard API endpoint. Enter the ASIN to call Amazon API endpoint</p>
+	        </td>
+        </tr>
+
         <tr valign="top">
 	        <th scope="row">Number of posts</th>
 	        <td>
