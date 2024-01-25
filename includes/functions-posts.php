@@ -38,6 +38,18 @@ function wp_content_generatorPosts(){
     include( WP_PLUGIN_DIR.'/'.plugin_dir_path(wp_content_generator_PLUGIN_BASE_URL) . 'admin/template/wp_content_generator-posts.php');
 }
 
+function wp_content_generatorGetUsers(){
+    $users_array = array();
+    $users = get_users(array(
+        'fields' => array('ID', 'display_name'), // Obtener solo el ID y el nombre para mostrar de cada usuario
+    ));
+    foreach($users as $user) {
+        $users_array[$user->ID] = $user->display_name;
+    }
+    
+    return $users_array;
+}
+
 function wp_content_generatorGetCategory(){
     $posttypes_array = array();
 	$categories = get_categories(array(
@@ -151,6 +163,7 @@ function wp_content_generatorGetTaxonomies($post_type='post'){
 function wp_content_generatorGeneratePosts(
     array $categories,
     $category='software',
+    $post_user=1,
     $asin='',
     $wp_content_generatorIsThumbnail='off',
     $wp_content_generatorIsTaxonomies='off',
@@ -208,7 +221,7 @@ function wp_content_generatorGeneratePosts(
       'post_title' => wp_strip_all_tags( $wp_content_generatorPostTitle ),
       'post_content' => $wp_content_generatorPostDescription,
       'post_status' => 'private',
-      'post_author' => 3,
+      'post_author' => $post_user,
       'post_date' => $postDate,
       'post_type' => $posttype,
       'post_category' => $categories
@@ -267,6 +280,7 @@ function wp_content_generatorAjaxGenPosts () {
     $wp_content_generatorIsTaxonomies = 'off';
     $category = sanitize_text_field($_POST['wp_content_generator-category']);
     $categories = $_POST['wp_content_generator-categories'];
+    $post_user = sanitize_text_field($_POST['wp_content_generator-user']);
     $asin = sanitize_text_field($_POST['wp_content_generator-post_asin']);
     $remaining_posts = sanitize_text_field($_POST['remaining_posts']);
     $post_count = sanitize_text_field($_POST['wp_content_generator-post_count']);
@@ -287,6 +301,7 @@ function wp_content_generatorAjaxGenPosts () {
         $generationStatus = wp_content_generatorGeneratePosts(
             $categories,
             $category,
+            $post_user,
             $asin,
             $wp_content_generatorIsThumbnail,
             $wp_content_generatorIsTaxonomies,

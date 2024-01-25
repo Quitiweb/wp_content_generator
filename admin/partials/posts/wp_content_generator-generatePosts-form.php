@@ -1,3 +1,4 @@
+<?php $wp_content_generatorPosUser = wp_content_generatorGetUsers(); ?>
 <?php $wp_content_generatorPosCategory = wp_content_generatorGetCategory(); ?>
 <?php $wp_content_generatorPosCats = wp_content_generatorGetCategories(); ?>
 
@@ -32,11 +33,22 @@
 	        	<p class="description">Choose the WP post categories</p>
 	        </td>
         </tr>
+	    <tr valign="top">
+	        <th scope="row">Select the user</th>
+	        <td>
+	        	<select name="wp_content_generator-user">
+	        		<?php foreach ($wp_content_generatorPosUser as $key => $value): ?>
+	        			<option value="<?php echo $key; ?>"><?php echo $value; ?></option>
+	        		<?php endforeach; ?>
+	        	</select>
+	        	<p class="description">Choose the user that "writes" the post</p>
+	        </td>
+        </tr>
 
         <tr valign="top">
 	        <th scope="row">Amazon SIN</th>
 	        <td>
-	        	<input type="text" name="wp_content_generator-post_asin" class="wp_content_generator-post_count"  placeholder="ASIN" />
+	        	<input type="text" name="wp_content_generator-post_asin" class="wp_content_generator-post_asin"  placeholder="ASIN" />
 	        	<p class="description">Leave blank to call standard API endpoint. Enter the ASIN to call Amazon API endpoint</p>
 	        </td>
         </tr>
