@@ -205,8 +205,9 @@ function wp_content_generatorGeneratePosts(
 
     // Decodifica los datos JSON obtenidos
     $data = json_decode($response, true);
-    if $data['title'] ?? null:
+    if ($data['title'] ?? null){
         return 'error';
+    }
     $title = $data['title'];
     $description = $data['description'];
 
