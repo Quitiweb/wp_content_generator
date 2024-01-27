@@ -8,6 +8,7 @@
 <form method="post" id="wp_content_generatorGenPostForm" class="wp_content_generatorCol-9">
 	<input type="hidden" name="action" value="wp_content_generatorAjaxGenPosts" />
 	<input type="hidden" name="remaining_posts" class="remaining_posts" value="" />
+	<input type="hidden" name="remaining_asins" class="remaining_asins" value="" />
 	<input type="hidden" name="nonce" value="<?=wp_create_nonce('wpdcg-ajax-nonce')?>" />
     
     <table class="form-table">
@@ -44,12 +45,38 @@
 	        	<p class="description">Choose the user that "writes" the post</p>
 	        </td>
         </tr>
+        <tr valign="top">
+	        <th scope="row">Posts date range</th>
+	        <td>
+	        	<label>From</label>
+	        	<input type="date" name="wp_content_generator-post_from" class="wp_content_generator-post_from"  placeholder="Date Range From" value="<?=date("Y/m/d")?>" />
+
+	        	<label>To</label>
+	        	<input type="date" name="wp_content_generator-post_to" class="wp_content_generator-post_to"  placeholder="Date Range To" value="<?=date("Y/m/d")?>" />
+
+	        	<p class="description">Choose the from and to date. The Plugin will pick any random date from this range to use as a post publish date</p>
+	        </td>
+        </tr>
+
+		<tr valign="top"><th scope="row"><hr /></th></tr>
 
         <tr valign="top">
-	        <th scope="row">Amazon SIN</th>
+	        <th scope="row">How this section below works</th>
 	        <td>
-	        	<input type="text" name="wp_content_generator-post_asin" class="wp_content_generator-post_asin"  placeholder="ASIN" />
-	        	<p class="description">Leave blank to call standard API endpoint. Enter the ASIN to call Amazon API endpoint</p>
+	        	<p>Or ASIN list or Number of posts</p>
+				<p>CASE 1: When Amazon SIN is blank, then, it generates the X number of posts for the category selected (the titles need to be created in the API before the call)</p>
+				<p>CASE 2: Amazon SIN list with the ASINs list. For example: B091D2CKC7 B097Y3PCTD B0C58GTXF5</p>
+	        </td>
+        </tr>
+
+		<tr valign="top"><th scope="row"><hr /></th></tr>
+
+        <tr valign="top">
+	        <th scope="row">Amazon SINs</th>
+	        <td>
+	        	<input type="text" name="wp_content_generator-post_asin" class="wp_content_generator-post_asin"  placeholder="ASIN1 ASIN2 ASIN3" />
+	        	<p class="description">Example: B091D2CKC7 B097Y3PCTD B0C58GTXF5</p>
+				<p class="description">Leave blank to call standard API endpoint. Enter the ASINs list to call Amazon API endpoint</p>
 	        </td>
         </tr>
 
@@ -61,18 +88,6 @@
 	        </td>
         </tr>
 
-        <tr valign="top">
-	        <th scope="row">Posts date range</th>
-	        <td>
-	        	<label>From</label>
-	        	<input type="date" name="wp_content_generator-post_from" class="wp_content_generator-post_from"  placeholder="Date Range From" value="<?=date("Y/m/d")?>"/>
-
-	        	<label>To</label>
-	        	<input type="date" name="wp_content_generator-post_to" class="wp_content_generator-post_to"  placeholder="Date Range To" value="<?=date("Y/m/d")?>" />
-
-	        	<p class="description">Choose the from and to date. The Plugin will pick any random date from this range to use as a post publish date</p>
-	        </td>
-        </tr>
         <tr valign="top" style="display: none;">
 	        <th scope="row">Featured Image/Thumbnail</th>
 	        <td>
@@ -90,7 +105,9 @@
         </tr>
     </table>
 
-    <input class="wp_content_generator-btn btnFade wp_content_generator-btnBlueGreen wp_content_generatorGeneratePosts" type="submit" name="wp_content_generatorGeneratePosts" value="Generate posts">
+    <tr valign="top"><th scope="row"><hr /></th></tr>
+
+	<input class="wp_content_generator-btn btnFade wp_content_generator-btnBlueGreen wp_content_generatorGeneratePosts" type="submit" name="wp_content_generatorGeneratePosts" value="Generate posts">
 
 </form>
 

@@ -55,7 +55,6 @@
 		}
 		// manage data from adminbar links
 
-
 		// var data_val = $('#wp_content_generatorGenPostForm').serialize();
 		$('#wp_content_generatorListPostsTbl').DataTable();
 		$('#wp_content_generatorListProductsTbl').DataTable();
@@ -65,8 +64,16 @@
 			if (is_sending) {
 				return false; // Don't let someone submit the form while it is in-progress...
 			}
-			e.preventDefault(); // Prevent the default form submit
-			$('.remaining_posts').val($('.wp_content_generator-post_count').val());
+			e.preventDefault(); // Prevents the default form submit
+			// if ASIN is not blank, we need to count the number of ASINs and loop
+			var asins = $('.wp_content_generator-post_asin').val();
+			if (asins === '') {
+				$('.remaining_posts').val($('.wp_content_generator-post_count').val());
+			}else {
+				let asins_array = asins.split(" ");
+				$('.remaining_posts').val(asins_array.length);
+				$('.remaining_asins').val(asins);
+			}
 			var $this = $(this); // Cache this
 			// call ajax here
 			$('.dcsLoader').show();
@@ -116,16 +123,25 @@
 				data: $this.serialize(), // One-liner form data prep...
 				beforeSend: function () {
 					is_sending = true;
-					$('.wp_content_generatorGeneratePosts').val('Generating posts.');
+					$('.wp_content_generatorGeneratePosts').val('Generating posts...');
 					// You could do an animation here...
 				},
 				error: handleFormError,
 				success: function (data) {
-					$('.wp_content_generatorGeneratePosts').val('Generate posts.');
+					$('.wp_content_generatorGeneratePosts').val('Generate posts');
 					if (data.status === 'success' && data.remaining_posts>0) {
+						// if this is the first time, we assign the var totalOfPosts value
+						if (typeof totalOfPosts === 'undefined') {
+							// if ASIN is not blank, we need to count the number of ASINs and loop
+							var asins = $('.wp_content_generator-post_asin').val();
+							if (asins === '') {
+								var totalOfPosts = $('.wp_content_generator-post_count').val();
+							}else {
+								var totalOfPosts = asins.length;
+							}
+						}
 						$('.remaining_posts').val(data.remaining_posts);
-						var totalOfPosts = $('.wp_content_generator-post_count').val();
-						
+						$('.remaining_asins').val(data.remaining_asins);
 						// loader
 						var wp_content_generatorcompletedPer = Math.round(( (totalOfPosts - data.remaining_posts ) * 100 ) /totalOfPosts);
 						$('.wp_content_generatorLoaderPer').text(wp_content_generatorcompletedPer+'%');

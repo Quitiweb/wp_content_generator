@@ -205,6 +205,8 @@ function wp_content_generatorGeneratePosts(
 
     // Decodifica los datos JSON obtenidos
     $data = json_decode($response, true);
+    if $data['title'] ?? null:
+        return 'error';
     $title = $data['title'];
     $description = $data['description'];
 
@@ -281,7 +283,7 @@ function wp_content_generatorAjaxGenPosts () {
     $category = sanitize_text_field($_POST['wp_content_generator-category']);
     $categories = $_POST['wp_content_generator-categories'];
     $post_user = sanitize_text_field($_POST['wp_content_generator-user']);
-    $asin = sanitize_text_field($_POST['wp_content_generator-post_asin']);
+    $remaining_asins = sanitize_text_field($_POST['remaining_asins']);
     $remaining_posts = sanitize_text_field($_POST['remaining_posts']);
     $post_count = sanitize_text_field($_POST['wp_content_generator-post_count']);
 
@@ -296,8 +298,17 @@ function wp_content_generatorAjaxGenPosts () {
 
     $postFromDate = sanitize_text_field($_POST['wp_content_generator-post_from']);
     $postToDate = sanitize_text_field($_POST['wp_content_generator-post_to']);
-    $counter = 0;
-    for ($i=0; $i < $loopLimit ; $i++) { 
+
+    for ($i=0; $i < $loopLimit ; $i++) {
+        if (trim($remaining_asins) === ''){
+            $asin = '';
+        }else{
+            $asins_array = explode(' ', $remaining_asins);
+            $asin = current($asins_array);
+            $asin_key = array_search($asin, $asins_array);
+            unset($asins_array[$asin_key]);
+            $remaining_asins = implode(" ", $asins_array);
+        }
         $generationStatus = wp_content_generatorGeneratePosts(
             $categories,
             $category,
@@ -308,16 +319,13 @@ function wp_content_generatorAjaxGenPosts () {
             $postFromDate,
             $postToDate
         );
-        if($generationStatus == 'success'){
-            $counter++;
-        }
     }
     if($remaining_posts>=2){
         $remaining_posts = $remaining_posts - 2;
     }else{
         $remaining_posts = 0;
     }
-    echo json_encode(array('status' => 'success', 'message' => 'Posts generated successfully.','remaining_posts' => $remaining_posts) );
+    echo json_encode(array('status' => 'success', 'message' => 'Posts generated successfully.', 'remaining_posts' => $remaining_posts, 'remaining_asins' => $remaining_asins));
     die();
 }
 
