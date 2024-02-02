@@ -67,7 +67,7 @@
 			e.preventDefault(); // Prevents the default form submit
 			// if ASIN is not blank, we need to count the number of ASINs and loop
 			var asins = $('.wp_content_generator-post_asin').val();
-			if (asins === '') {
+			if (asins == "" || asins == null) {
 				$('.remaining_posts').val($('.wp_content_generator-post_count').val());
 			}else {
 				let asins_array = asins.split(" ");
@@ -134,7 +134,7 @@
 						if (typeof totalOfPosts === 'undefined') {
 							// if ASIN is not blank, we need to count the number of ASINs and loop
 							var asins = $('.wp_content_generator-post_asin').val();
-							if (asins === '') {
+							if (asins == "" || asins == null) {
 								var totalOfPosts = $('.wp_content_generator-post_count').val();
 							}else {
 								var totalOfPosts = asins.length;

@@ -182,7 +182,7 @@ function wp_content_generatorGeneratePosts(
 
     // URL de la API que devuelve el JSON con los datos de la entrada
     // Llamamos al endpoint de Amazon si viene el ASIN del formulario
-    if (trim($asin) === ''){
+    if ($asin === null || trim($asin) === ''){
         $base_url = sprintf("%s/%s", $host_aws, 'post/generate/');
         $api_url = sprintf("%s?%s", $base_url, http_build_query(array("category" => $category)));
     }else{
@@ -301,7 +301,7 @@ function wp_content_generatorAjaxGenPosts () {
     $postToDate = sanitize_text_field($_POST['wp_content_generator-post_to']);
 
     for ($i=0; $i < $loopLimit ; $i++) {
-        if (trim($remaining_asins) === ''){
+        if ($remaining_asins === null || trim($remaining_asins) === ''){
             $asin = '';
         }else{
             $asins_array = explode(' ', $remaining_asins);
