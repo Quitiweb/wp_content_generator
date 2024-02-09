@@ -67,10 +67,10 @@
 			e.preventDefault(); // Prevents the default form submit
 			// if ASIN is not blank, we need to count the number of ASINs and loop
 			var asins = $('.wp_content_generator-post_asin').val();
-			if (asins == "" || asins == null) {
+			if (asins == '' || asins == null) {
 				$('.remaining_posts').val($('.wp_content_generator-post_count').val());
 			}else {
-				let asins_array = asins.split(" ");
+				var asins_array = asins.split(" ");
 				$('.remaining_posts').val(asins_array.length);
 				$('.remaining_asins').val(asins);
 			}
@@ -130,15 +130,13 @@
 				success: function (data) {
 					$('.wp_content_generatorGeneratePosts').val('Generate posts');
 					if (data.status === 'success' && data.remaining_posts>0) {
-						// if this is the first time, we assign the var totalOfPosts value
-						if (typeof totalOfPosts === 'undefined') {
-							// if ASIN is not blank, we need to count the number of ASINs and loop
-							var asins = $('.wp_content_generator-post_asin').val();
-							if (asins == "" || asins == null) {
-								var totalOfPosts = $('.wp_content_generator-post_count').val();
-							}else {
-								var totalOfPosts = asins.length;
-							}
+						var totalOfPosts = 0;
+						// if ASIN is not blank, we need to count the number of ASINs and loop
+						var asins = $('.wp_content_generator-post_asin').val();
+						if (asins == '' || asins == null) {
+							totalOfPosts = $('.wp_content_generator-post_count').val();
+						}else {
+							totalOfPosts = asins.length;
 						}
 						$('.remaining_posts').val(data.remaining_posts);
 						$('.remaining_asins').val(data.remaining_asins);

@@ -246,6 +246,7 @@ function wp_content_generatorGeneratePosts(
     }
 
 }
+
 /*
 function wp_content_generator_Generate_Featured_Image( $image_url, $post_id ){
     $upload_dir = wp_upload_dir();
