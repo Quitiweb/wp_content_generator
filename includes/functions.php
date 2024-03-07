@@ -3,11 +3,11 @@
 add_action('admin_menu', 'wp_content_generatorDashboard');
 
 function wp_content_generatorDashboard(){
-    add_menu_page( 'wp_content_generator dashboard', 'Content Generator', 'manage_options', 'wp_content_generator-dashboard', 'wp_content_generatorMainDashboard','dashicons-database-view',58);
+    add_menu_page( 'wp_content_generator dashboard', 'Content Generator', 'manage_options', 'wp_content_generator-dashboard', 'wp_content_generatorMainDashboard', 'dashicons-database-view', 58);
     // add_submenu_page ( 'wp_content_generator-dashboard', 'Users', 'Users', 'read', 'wp_content_generator-users', 'wp_content_generatorUsers');
     add_submenu_page ( 'wp_content_generator-dashboard', 'Posts', 'Posts', 'read', 'wp_content_generator-posts', 'wp_content_generatorPosts');
     // add_submenu_page ( 'wp_content_generator-dashboard', 'Products', 'Products', 'read', 'wp_content_generator-products', 'wp_content_generatorProducts');
-    add_submenu_page ( 'wp_content_generator-dashboard', 'Thumbnails', 'Thumbnails', 'read', 'wp_content_generator-thumbnails', 'wp_content_generatorThumbnails');
+    add_submenu_page ( 'wp_content_generator-dashboard', 'Tests', 'Tests', 'read', 'wp_content_generator-test', 'wp_content_generatorTest');
 }
 
 function wp_content_generatorMainDashboard(){

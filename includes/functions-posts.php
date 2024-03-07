@@ -177,8 +177,9 @@ function wp_content_generatorGeneratePosts(
     if($postDateTo == ''){
         $postDateTo = date("Y-m-d");
     }
-    $host_aws = 'http://ec2-15-188-189-171.eu-west-3.compute.amazonaws.com';
-    $host_dh = 'https://post.quitiweb.com';
+    // $host_aws = 'http://ec2-15-188-189-171.eu-west-3.compute.amazonaws.com';
+    $host_aws = 'http://127.0.0.1:8000';
+    // $host_dh = 'https://post.quitiweb.com';
 
     // URL de la API que devuelve el JSON con los datos de la entrada
     // Llamamos al endpoint de Amazon si viene el ASIN del formulario
