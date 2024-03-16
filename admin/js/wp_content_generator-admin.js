@@ -2,14 +2,17 @@
     "use strict";
     e(function () {
 
-        e(document).on("click", ".wp_content_generatorDataCleaner", function (t) {
+        // Función del Data Cleaner
+		e(document).on("click", ".wp_content_generatorDataCleaner", function (t) {
             t.preventDefault();
             var n,
                 a,
                 o = e(this).attr("id");
             console.log(o);
             var s = "";
-            switch (o) {
+            
+			// Delete posts section
+			switch (o) {
                 case "wp-admin-bar-wp_content_generatorDeleteUsers":
                     s = "wp_content_generatorDeleteUsers";
                     break;
@@ -22,6 +25,7 @@
                 case "wp-admin-bar-wp_content_generatorDeleteThumbnails":
                     s = "wp_content_generatorDeleteThumbnails";
             }
+
             (n = s),
                 (a = wp_content_generator_backend_ajax_object.wp_content_generator_ajax_url),
                 e.ajax({
@@ -40,7 +44,8 @@
                 console.log(s);
         }),
 
-        e("#wp_content_generatorListPostsTbl").DataTable(),
+        // Tablas para el Listado de Posts y el listado de Productos
+		e("#wp_content_generatorListPostsTbl").DataTable(),
         e("#wp_content_generatorListProductsTbl").DataTable();
 
         var t = !1;
@@ -49,7 +54,8 @@
             (t = !1), e(".wp_content_generator-error-msg").html("Something went wrong. Please try again").fadeIn("fast").delay(1e3).fadeOut("slow");
         }
 
-        e("#wp_content_generatorGenPostForm").submit(function (n) {
+        // Función JS para la generación de Posts Standard
+		e("#wp_content_generatorGenPostForm").submit(function (n) {
             if (t) return !1; // Don't let someone submit the form while it is in-progress...
             n.preventDefault(); // Prevents the default form submit
             e(".remaining_posts").val(e(".wp_content_generator-post_count").val());
@@ -79,6 +85,56 @@
                                     n(o);
                             } else
                                 "success" === a.status && 0 == a.remaining_posts
+                                    ? (e(".wp_content_generator-success-msg").html("Posts generated successfully.").fadeIn("fast").delay(1e3).fadeOut("slow"),
+                                      e(".wp_content_generatorLoaderPer").text("100%"),
+                                      e(".wp_content_generatorLoaderWrpper").attr("class", "wp_content_generatorLoaderWrpper c100 blue"),
+                                      e(".wp_content_generatorLoaderWrpper").addClass("p100"),
+                                      e(".dcsLoader").hide(),
+                                      e(".wp_content_generatorLoaderPer").text("0%"),
+                                      e(".wp_content_generatorLoaderWrpper").attr("class", "wp_content_generatorLoaderWrpper c100 blue"),
+                                      e(".wp_content_generatorLoaderWrpper").addClass("p0"),
+                                      (t = !1))
+                                    : (r(), (t = !1));
+                        },
+                    });
+                })(a);
+        }),
+
+        // Función JS para la generación de Posts AWS
+        e("#wp_content_generatorGenAWSPostForm").submit(function (n) {
+            if (t) return !1; // Don't let someone submit the form while it is in-progress...
+            n.preventDefault(); // Prevents the default form submit
+            var asins = $('.wp_content_generator-post_asin').val();
+            var asins_array = asins.split(" ");
+            $(".remaining_posts").val(asins_array.length);
+            $(".remaining_asins").val(asins);
+			$(".total_posts").val(asins_array.length);
+            var a = e(this);
+
+            e(".dcsLoader").show(),
+                (function n(a) {
+                    var o = a,
+                        s = wp_content_generator_backend_ajax_object.wp_content_generator_ajax_url;
+                    e.ajax({
+                        url: s,
+                        type: "post",
+                        dataType: "JSON",
+                        data: o.serialize(),
+                        beforeSend: function () {
+                            (t = !0), e(".wp_content_generatorGenerateAWSPosts").val("Generating posts...");
+                        },
+                        error: r,
+                        success: function (a) {
+                            if ((e(".wp_content_generatorGenerateAWSPosts").val("Generate posts"), "success" === a.status && a.remaining_posts > 0)) {
+                                e(".remaining_posts").val(a.remaining_posts);
+                                var s = e(".total_posts").val(),
+                                    d = Math.round(((s - a.remaining_asins) * 100) / s);
+                                e(".wp_content_generatorLoaderPer").text(d + "%"),
+                                    e(".wp_content_generatorLoaderWrpper").attr("class", "wp_content_generatorLoaderWrpper c100 blue"),
+                                    e(".wp_content_generatorLoaderWrpper").addClass("p" + d),
+                                    n(o);
+                            } else
+                                "success" === a.status && 0 == a.remaining_asins
                                     ? (e(".wp_content_generator-success-msg").html("Posts generated successfully.").fadeIn("fast").delay(1e3).fadeOut("slow"),
                                       e(".wp_content_generatorLoaderPer").text("100%"),
                                       e(".wp_content_generatorLoaderWrpper").attr("class", "wp_content_generatorLoaderWrpper c100 blue"),

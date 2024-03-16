@@ -9,6 +9,7 @@
 	<input type="hidden" name="action" value="wp_content_generatorAjaxGenAWSPosts" />
 	<input type="hidden" name="remaining_posts" class="remaining_posts" value="" />
 	<input type="hidden" name="remaining_asins" class="remaining_asins" value="" />
+	<input type="hidden" name="total_posts" class="total_posts" value="" />
 	<input type="hidden" name="nonce" value="<?=wp_create_nonce('wpdcg-ajax-nonce')?>" />
     
     <table class="form-table">

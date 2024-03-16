@@ -8,7 +8,6 @@
 <form method="post" id="wp_content_generatorGenPostForm" class="wp_content_generatorCol-9">
 	<input type="hidden" name="action" value="wp_content_generatorAjaxGenPosts" />
 	<input type="hidden" name="remaining_posts" class="remaining_posts" value="" />
-	<input type="hidden" name="remaining_asins" class="remaining_asins" value="" />
 	<input type="hidden" name="nonce" value="<?=wp_create_nonce('wpdcg-ajax-nonce')?>" />
     
     <table class="form-table">
