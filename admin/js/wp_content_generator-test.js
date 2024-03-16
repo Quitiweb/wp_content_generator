@@ -1,112 +1,69 @@
-(function( $ ) {
-	'use strict';
+!(function (e) {
 
-	$(function() {
+    "use strict";
 
-		var is_sending = false;
+    e(function () {
 
-		$('#wp_content_generatorTestForm').submit(function (e) {
-			if (is_sending) {
-				return false; // Don't let someone submit the form while it is in-progress...
-			}
-			e.preventDefault(); // Prevents the default form submit
-			// if ASIN is not blank, we need to count the number of ASINs and loop
-			var asins = $('.wp_content_generator-post_asin').val();
-			// log
-			console.log('asins y -post_asin from wp_content_generatorTestForm');
-			console.log(asins);
-			console.log($('.wp_content_generator-post_asin').val());
-			if (asins == '' || asins == null) {
-				$('.remaining_posts').val($('.wp_content_generator-post_count').val());
-			}else {
-				var asins_array = asins.split(" ");
-				$('.remaining_posts').val(asins_array.length);
-				$('.remaining_asins').val(asins);
-			}
-			// log
-			console.log('remaining_posts');
-			console.log($('.remaining_posts').val());
+        var t = !1;
+        
+		function r() {
+            (t = !1), e(".wp_content_generator-error-msg").html("Something went wrong. Please try again").fadeIn("fast").delay(1e3).fadeOut("slow");
+        }
 
-			var $this = $(this); // Cache this
-			// call ajax here
-			$('.dcsLoader').show();
-			// $('.remaining_notification').html('').html('<p>Post generator initialized. Waiting for the first response...</p>');
-			wp_content_generator_generateTestLoop($this);
-		});
+        e("#wp_content_generatorTestForm").submit(function (n) {
 
-		function handleFormError () {
-			is_sending = false; // Reset the is_sending var so they can try again...
-			$('.wp_content_generator-error-msg').html('Something went wrong. Please try again').fadeIn('fast').delay(1000).fadeOut('slow');
-		}
+			console.log('HOLAAAAAAAAAAAAAAAAAAAAA!!!!!');
 
-		function wp_content_generator_generateTestLoop($that){
-			var $this = $that;
-			var url = wp_content_generator_backend_ajax_object.wp_content_generator_ajax_url;
-			$.ajax({
-				url: url,
-				type: 'post',
-				dataType: 'JSON', // Set this so we don't need to decode the response...
-				data: $this.serialize(), // One-liner form data prep...
-				beforeSend: function () {
-					is_sending = true;
-					$('.wp_content_generatorGenerateTest').val('Generating posts...');
-					// You could do an animation here...
-				},
-				error: handleFormError,
-				success: function (data) {
-					$('.wp_content_generatorGenerateTest').val('Generate posts');
-					// log
-					console.log('data.remaining_posts');
-					console.log(data.remaining_posts);
-					if (data.status === 'success' && data.remaining_posts>0) {
-						var totalOfPosts = 0;
-						// if ASIN is not blank, we need to count the number of ASINs and loop
-						var asins = $('.wp_content_generator-post_asin').val();
-						// log
-						console.log('asins y -post_asin');
-						console.log(asins);
-						console.log($('.wp_content_generator-post_asin').val());
-						if (asins == '' || asins == null) {
-							totalOfPosts = $('.wp_content_generator-post_count').val();
-						}else {
-							totalOfPosts = asins.length;
-						}
-						// log
-						console.log('total of posts');
-						console.log(totalOfPosts);
-						$('.remaining_posts').val(data.remaining_posts);
-						$('.remaining_asins').val(data.remaining_asins);
-						// loader
-						var wp_content_generatorcompletedPer = Math.round(( (totalOfPosts - data.remaining_posts ) * 100 ) /totalOfPosts);
-						$('.wp_content_generatorLoaderPer').text(wp_content_generatorcompletedPer+'%');
-						var addedClass = 'p'+wp_content_generatorcompletedPer;
-						$('.wp_content_generatorLoaderWrpper').attr('class','wp_content_generatorLoaderWrpper c100 blue');
-						$('.wp_content_generatorLoaderWrpper').addClass(addedClass);
-						// loader
+            if (t) return !1; // Don't let someone submit the form while it is in-progress...
+            n.preventDefault(); // Prevents the default form submit
 
-						//$('.remaining_notification').html('').html('<p>'+data.remaining_posts+' posts are remaining out of '+totalOfPosts+'</p>');
-						wp_content_generator_generateTestLoop($this);
-					}else if (data.status === 'success' && data.remaining_posts==0){
-						$('.wp_content_generator-success-msg').html('Posts generated successfully.').fadeIn('fast').delay(1000).fadeOut('slow');
-						// loader
-						$('.wp_content_generatorLoaderPer').text('100%');
-						$('.wp_content_generatorLoaderWrpper').attr('class','wp_content_generatorLoaderWrpper c100 blue');
-						$('.wp_content_generatorLoaderWrpper').addClass('p100');
-						$('.dcsLoader').hide();
-						$('.wp_content_generatorLoaderPer').text('0%');
-						$('.wp_content_generatorLoaderWrpper').attr('class','wp_content_generatorLoaderWrpper c100 blue');
-						$('.wp_content_generatorLoaderWrpper').addClass('p0');
-						// loader
-						//$('.remaining_notification').html('');
-						is_sending = false;
-					}else {
-						handleFormError(); // If we don't get the expected response, it's an error...
-						is_sending = false;
-					}
-				}
-			});
-		}
+            e(".remaining_posts").val(e(".wp_content_generator-post_count").val());
+            var a = e(this);
 
-	});
+			console.log('Valor de .remaining_posts wp_content_generatorTestForm');
+			console.log(e(".remaining_posts").val(a.remaining_posts));
 
-})( jQuery );
+            e(".dcsLoader").show();
+
+			(function n(a) {
+				var o = a,
+					s = wp_content_generator_backend_ajax_object.wp_content_generator_ajax_url;
+
+				e.ajax({
+					url: s,
+					type: "post",
+					dataType: "JSON",
+					data: o.serialize(),
+					beforeSend: function () {
+						(t = !0), e(".wp_content_generatorGenerateTest").val("Generating posts...");
+					},
+					error: r,
+					success: function (a) {
+						if ((e(".wp_content_generatorGenerateTest").val("Generate posts"), "success" === a.status && a.remaining_posts > 0)) {
+							e(".remaining_posts").val(a.remaining_posts);
+							var s = e(".wp_content_generator-post_count").val(),
+								d = Math.round(((s - a.remaining_posts) * 100) / s);
+							e(".wp_content_generatorLoaderPer").text(d + "%"),
+								e(".wp_content_generatorLoaderWrpper").attr("class", "wp_content_generatorLoaderWrpper c100 blue"),
+								e(".wp_content_generatorLoaderWrpper").addClass("p" + d),
+								n(o);
+						} else
+							"success" === a.status && 0 == a.remaining_posts
+								? (e(".wp_content_generator-success-msg").html("Test Posts generated successfully.").fadeIn("fast").delay(1e3).fadeOut("slow"),
+									e(".wp_content_generatorLoaderPer").text("100%"),
+									e(".wp_content_generatorLoaderWrpper").attr("class", "wp_content_generatorLoaderWrpper c100 blue"),
+									e(".wp_content_generatorLoaderWrpper").addClass("p100"),
+									e(".dcsLoader").hide(),
+									e(".wp_content_generatorLoaderPer").text("0%"),
+									e(".wp_content_generatorLoaderWrpper").attr("class", "wp_content_generatorLoaderWrpper c100 blue"),
+									e(".wp_content_generatorLoaderWrpper").addClass("p0"),
+									(t = !1))
+								: (r(), (t = !1));
+					},
+				});
+			})(a);
+        });
+
+    });
+
+})(jQuery);

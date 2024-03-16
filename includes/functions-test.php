@@ -24,17 +24,17 @@ function wp_content_generatorGenerateTest(
     if($postDateTo == ''){
         $postDateTo = date("Y-m-d");
     }
-    // $host_aws = 'http://ec2-15-188-189-171.eu-west-3.compute.amazonaws.com';
-    $host_aws = 'http://127.0.0.1:8000';
-    // $host_dh = 'https://post.quitiweb.com';
+    // $host = 'http://ec2-15-188-189-171.eu-west-3.compute.amazonaws.com';
+    $host = 'http://127.0.0.1:8000';
+    // $host = 'https://post.quitiweb.com';
 
     // URL de la API que devuelve el JSON con los datos de la entrada
     // Llamamos al endpoint de Amazon si viene el ASIN del formulario
     if ($asin === null || trim($asin) === ''){
-        $base_url = sprintf("%s/%s", $host_aws, 'post/generate/');
+        $base_url = sprintf("%s/%s", $host, 'post/generate/');
         $api_url = sprintf("%s?%s", $base_url, http_build_query(array("category" => $category)));
     }else{
-        $base_url = sprintf("%s/%s", $host_aws, 'post/aws/');
+        $base_url = sprintf("%s/%s", $host, 'post/aws/');
         $api_url = sprintf("%s?%s", $base_url, http_build_query(array("category" => $category)));
         $api_url .= sprintf("&asin=%s", $asin);
     }
@@ -99,7 +99,6 @@ function wp_content_generatorAjaxTest () {
     $category = sanitize_text_field($_POST['wp_content_generator-category']);
     $categories = $_POST['wp_content_generator-categories'];
     $post_user = sanitize_text_field($_POST['wp_content_generator-user']);
-    $remaining_asins = sanitize_text_field($_POST['remaining_asins']);
     $remaining_posts = sanitize_text_field($_POST['remaining_posts']);
     $post_count = sanitize_text_field($_POST['wp_content_generator-post_count']);
 
@@ -113,15 +112,7 @@ function wp_content_generatorAjaxTest () {
     $postToDate = sanitize_text_field($_POST['wp_content_generator-post_to']);
 
     for ($i=0; $i < $loopLimit ; $i++) {
-        if ($remaining_asins === null || trim($remaining_asins) === ''){
-            $asin = '';
-        }else{
-            $asins_array = explode(' ', $remaining_asins);
-            $asin = current($asins_array);
-            $asin_key = array_search($asin, $asins_array);
-            unset($asins_array[$asin_key]);
-            $remaining_asins = implode(" ", $asins_array);
-        }
+        $asin = '';
         $generationStatus = wp_content_generatorGenerateTest(
             $categories,
             $category,
@@ -138,8 +129,8 @@ function wp_content_generatorAjaxTest () {
     }else{
         $remaining_posts = 0;
     }
-    echo json_encode(array('status' => 'success', 'message' => 'Posts generated successfully.', 'remaining_posts' => $remaining_posts, 'remaining_asins' => $remaining_asins));
+    echo json_encode(array('status' => 'success', 'message' => 'Test Posts generated successfully.', 'remaining_posts' => $remaining_posts));
     die();
 }
 
-add_action("wp_ajax_wp_content_generatorAjaxGenPosts", "wp_content_generatorAjaxTest");
+add_action("wp_ajax_wp_content_generatorAjaxGenTest", "wp_content_generatorAjaxTest");

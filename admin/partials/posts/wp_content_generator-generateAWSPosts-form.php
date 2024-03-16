@@ -5,15 +5,15 @@
 <div class="wp_content_generator-success-msg" style="display: none;"></div>
 <div class="wp_content_generator-error-msg" style="display: none;"></div>
 
-<form method="post" id="wp_content_generatorGenPostForm" class="wp_content_generatorCol-9">
-	<input type="hidden" name="action" value="wp_content_generatorAjaxGenPosts" />
+<form method="post" id="wp_content_generatorGenAWSPostForm" class="wp_content_generatorCol-9">
+	<input type="hidden" name="action" value="wp_content_generatorAjaxGenAWSPosts" />
 	<input type="hidden" name="remaining_posts" class="remaining_posts" value="" />
 	<input type="hidden" name="remaining_asins" class="remaining_asins" value="" />
 	<input type="hidden" name="nonce" value="<?=wp_create_nonce('wpdcg-ajax-nonce')?>" />
     
     <table class="form-table">
 		<tr valign="top">
-	        <th scope="row">Category for API call</th>
+	        <th scope="row">Main Category for API call</th>
 	        <td>
 	        	<select name="wp_content_generator-category">
 	        		<?php foreach ($wp_content_generatorPosCategory as $key => $value): ?>
@@ -58,34 +58,32 @@
 	        </td>
         </tr>
 
+		<tr valign="top"><th scope="row"><hr /></th></tr>
+
         <tr valign="top">
-	        <th scope="row">Number of posts</th>
+	        <th scope="row">How this section below works</th>
 	        <td>
-	        	<input type="number" name="wp_content_generator-post_count" class="wp_content_generator-post_count"  placeholder="Number of posts" value="1" max="500" min="1" />
-	        	<p class="description">Enter the number of posts you want to generate (max 500)</p>
+				<p>Step 1: Select the categories. It generates a post for the main category selected (the titles don't need to be created in the API before the call)</p>
+				<p>Step 2: Amazon SIN list with the ASINs list. For example: B091D2CKC7 B097Y3PCTD B0C58GTXF5</p>
 	        </td>
         </tr>
 
-        <tr valign="top" style="display: none;">
-	        <th scope="row">Featured Image/Thumbnail</th>
+		<tr valign="top"><th scope="row"><hr /></th></tr>
+
+        <tr valign="top">
+	        <th scope="row">Amazon SINs</th>
 	        <td>
-	        	<input type="checkbox" name="wp_content_generator-thumbnail" />
-	        	<p class="description">Check this checkbox if you want to generate the featured image for these posts</p>
+	        	<input type="text" name="wp_content_generator-post_asin" class="wp_content_generator-post_asin"  placeholder="ASIN1 ASIN2 ASIN3" />
+	        	<p class="description">Example: B091D2CKC7 B097Y3PCTD B0C58GTXF5</p>
+				<p class="description">Enter the ASINs list to call Amazon API endpoint</p>
 	        </td>
         </tr>
 
-		<tr valign="top" style="display: none;">
-	        <th scope="row">Generate/assign terms</th>
-	        <td>
-	        	<input type="checkbox" name="wp_content_generator-taxonomies" /> <!-- checked -->
-	        	<p class="taxonomies_wpdcg">Check this checkbox if you want to attach terms to these posts. The plugin will generate some terms and assign to these posts.</p>
-	        </td>
-        </tr>
     </table>
 
     <tr valign="top"><th scope="row"><hr /></th></tr>
 
-	<input class="wp_content_generator-btn btnFade wp_content_generator-btnBlueGreen wp_content_generatorGeneratePosts" type="submit" name="wp_content_generatorGeneratePosts" value="Generate posts">
+	<input class="wp_content_generator-btn btnFade wp_content_generator-btnBlueGreen wp_content_generatorGenerateAWSPosts" type="submit" name="wp_content_generatorGenerateAWSPosts" value="Generate AWS posts">
 
 </form>
 

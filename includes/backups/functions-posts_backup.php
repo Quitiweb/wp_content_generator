@@ -91,11 +91,41 @@ function wp_content_generatorGetPostTypes(){
         $posttypes_array[$post_type] = $wp_content_generator_pt_name;
     }
     if ( class_exists( 'WooCommerce' ) ) {
-        unset($posttypes_array['product']); // exclude 'product' post type as we are providing separate section for products
+        unset($posttypes_array['product']); //exclude 'product' post type as we are providing separate section for products
     }
     return $posttypes_array;
 }
-
+/*
+function wp_content_generator_Generate_TaxTerms( $wp_content_generatorPostID,$posttype){
+    $taxonomies = wp_content_generatorGetTaxonomies($posttype);
+    if(!empty($taxonomies)){
+        foreach ($taxonomies as $taxonomieskey => $taxonomiesvalue) {
+            $terms = get_terms( array(
+                'taxonomy' => $taxonomiesvalue,
+                'hide_empty' => false,
+            ) );
+            if(!empty($terms) && (sizeof($terms)>=5)){
+                // no need to generate terms. Use the existing terms and assign to the post
+                // Randomize Term Array
+                shuffle( $terms );
+                $random_terms = array_slice( $terms, 0, 1 );
+                $termID = array($random_terms[0]->term_id);
+                wp_set_post_terms( $wp_content_generatorPostID, $termID, $taxonomiesvalue );
+            }else{
+                wp_content_generator_generateFiveTerms($taxonomiesvalue);
+                $terms = get_terms( array(
+                    'taxonomy' => $taxonomiesvalue,
+                    'hide_empty' => false,
+                ) );
+                shuffle( $terms );
+                $random_terms = array_slice( $terms, 0, 1 );
+                $termID = array($random_terms[0]->term_id);
+                wp_set_post_terms( $wp_content_generatorPostID, $termID, $taxonomiesvalue );
+            }
+        }
+    }
+}
+*/
 function wp_content_generator_generateFiveTerms($taxonomiesvalue){
     // $faker->words(5);
     include( WP_PLUGIN_DIR.'/'.plugin_dir_path(wp_content_generator_PLUGIN_BASE_URL) . 'Faker-main/vendor/autoload.php');
@@ -120,44 +150,7 @@ function wp_content_generatorGetTaxonomies($post_type='post'){
 }
 
 /**
- * API Calls general function
- */
-function callAPI($url, $category){
-    // URL de la API que devuelve el JSON con los datos de la entrada
-    // Llamamos al endpoint de Amazon si viene el ASIN del formulario
-    $base_url = sprintf("%s/%s", $url, 'post/generate/');
-    $api_url = sprintf("%s?%s", $base_url, http_build_query(array("category" => $category)));
-
-    // Comienza la llamada
-    // Obtiene los datos de la API en formato JSON
-    $curl = curl_init();
-
-    // Recupera el Token para autorizar las llamadas a la API
-    $api_key = get_option('wp_content_generator_api_key');
-    $authorization = "Authorization: Bearer " . $api_key;
-
-    // OPTIONS:
-    curl_setopt($curl, CURLOPT_URL, $api_url);
-    curl_setopt($curl, CURLOPT_HTTPHEADER, array(
-        $authorization, 'Content-Type: application/json',
-    ));
-
-    // if ($_SERVER['HTTP_HOST'] == '127.0.0.1:8000') {
-    //     // Proxy for Docker
-    //     curl_setopt($ch, CURLOPT_PROXY, $_SERVER['SERVER_ADDR'] . ':' .  $_SERVER['SERVER_PORT']);
-    // }
-
-    curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
-
-    // EXECUTE:
-    $result = curl_exec($curl);
-    if(!$result){die("Connection Failure");}
-    curl_close($curl);
-    return $result;
- }
-
-/**
-* Main function that creates the Standard Posts 
+* Main function that creates the Posts 
 */
 function wp_content_generatorGeneratePosts(
     array $categories,
@@ -176,60 +169,9 @@ function wp_content_generatorGeneratePosts(
     if($postDateTo == ''){
         $postDateTo = date("Y-m-d");
     }
+    // $host = 'http://ec2-15-188-189-171.eu-west-3.compute.amazonaws.com';
     // $host = 'http://127.0.0.1:8000';
     $host = 'https://post.quitiweb.com';
-    $get_data = callAPI($host, $category);
-
-    // Decodifica los datos JSON obtenidos
-    $data = json_decode($get_data, true);
-    $title = $data['title'];
-    $description = $data['description'];
-
-    // Create post
-    $postDate = wp_content_generatorRandomDate($postDateFrom, $postDateTo);
-    $wp_content_generatorPostArray = array(
-      'post_title' => $title,
-      'post_content' => $description,
-      'post_status' => 'private',
-      'post_author' => $post_user,
-      'post_date' => $postDate,
-      'post_type' => $posttype,
-      'post_category' => $categories
-    );
-
-    // Insert the post into the database
-    $wp_content_generatorPostID = wp_insert_post( $wp_content_generatorPostArray );
-    if($wp_content_generatorPostID){
-        update_post_meta($wp_content_generatorPostID, 'wp_content_generator_post', 'true');
-        return 'success';
-    }else{
-        return 'error';
-    }
-}
-
-/**
-* Main function that creates the AWS Posts 
-*/
-function wp_content_generatorGenerateAWSPosts(
-    array $categories,
-    $category='software',
-    $post_user=1,
-    $asin='',
-    $wp_content_generatorIsThumbnail='off',
-    $wp_content_generatorIsTaxonomies='off',
-    $postDateFrom='',
-    $postDateTo=''
-){
-    $posttype = 'post';
-    if($postDateFrom == ''){
-        $postDateFrom = date("Y-m-d");
-    }
-    if($postDateTo == ''){
-        $postDateTo = date("Y-m-d");
-    }
-    // $host = 'http://ec2-15-188-189-171.eu-west-3.compute.amazonaws.com';
-    $host = 'http://127.0.0.1:8000';
-    // $host = 'https://post.quitiweb.com';
 
     // URL de la API que devuelve el JSON con los datos de la entrada
     // Llamamos al endpoint de Amazon si viene el ASIN del formulario
@@ -285,15 +227,47 @@ function wp_content_generatorGenerateAWSPosts(
     $wp_content_generatorPostID = wp_insert_post( $wp_content_generatorPostArray );
     if($wp_content_generatorPostID){
         update_post_meta($wp_content_generatorPostID, 'wp_content_generator_post','true');
+        /*
+        if($wp_content_generatorIsThumbnail=='on')
+            wp_content_generator_Generate_Featured_Image( $wp_content_generatorPostThumb, $wp_content_generatorPostID );
+        if($wp_content_generatorIsTaxonomies=='on')
+            wp_content_generator_Generate_TaxTerms( $wp_content_generatorPostID, $posttype );
+        */
         return 'success';
     }else{
         return 'error';
     }
+
 }
 
-/**
- * The AJAX function for the Standard Post Generator
- */
+/*
+function wp_content_generator_Generate_Featured_Image( $image_url, $post_id ){
+    $upload_dir = wp_upload_dir();
+    $image_data = file_get_contents($image_url);
+    $filename = "wp_content_generator_".$post_id.".jpg";
+    if(wp_mkdir_p($upload_dir['path'])){
+        $file = $upload_dir['path'] . '/' . $filename;
+    }
+    else{
+        $file = $upload_dir['basedir'] . '/' . $filename;
+    }
+    file_put_contents($file, $image_data);
+    $wp_filetype = wp_check_filetype($filename, null ); 
+    $attachment = array(
+        'post_mime_type' => 'image/jpg',
+        'post_title' => sanitize_file_name($filename),
+        'post_content' => '',
+        'post_status' => 'inherit'
+    );
+    $attach_id = wp_insert_attachment( $attachment, $file, $post_id );
+    require_once(ABSPATH . 'wp-admin/includes/image.php');
+    $attach_data = wp_generate_attachment_metadata( $attach_id, $file );
+    $res1 = wp_update_attachment_metadata( $attach_id, $attach_data );
+    update_post_meta($attach_id, 'wp_content_generator_attachment','true');
+    $res2 = set_post_thumbnail( $post_id, $attach_id );
+}
+*/
+
 function wp_content_generatorAjaxGenPosts () {
     if ( !current_user_can('manage_options') || !wp_verify_nonce( $_POST['nonce'], 'wpdcg-ajax-nonce' ) ) {
         echo json_encode(array('status' => 'error', 'message' => 'Unauthorized Access.') );
@@ -351,65 +325,6 @@ function wp_content_generatorAjaxGenPosts () {
 }
 
 add_action("wp_ajax_wp_content_generatorAjaxGenPosts", "wp_content_generatorAjaxGenPosts");
-
-/**
- * The AJAX function for the AWS Post Generator
- */
-function wp_content_generatorAjaxGenAWSPosts () {
-    if ( !current_user_can('manage_options') || !wp_verify_nonce( $_POST['nonce'], 'wpdcg-ajax-nonce' ) ) {
-        echo json_encode(array('status' => 'error', 'message' => 'Unauthorized Access.') );
-        die();
-    }
-    $category = sanitize_text_field($_POST['wp_content_generator-category']);
-    $categories = $_POST['wp_content_generator-categories'];
-    $post_user = sanitize_text_field($_POST['wp_content_generator-user']);
-    $remaining_asins = sanitize_text_field($_POST['remaining_asins']);
-    $remaining_posts = sanitize_text_field($_POST['remaining_posts']);
-    $post_count = sanitize_text_field($_POST['wp_content_generator-post_count']);
-
-    if($remaining_posts>=2){
-        $loopLimit = 2;
-    }else{
-        $loopLimit = $remaining_posts;
-    }
-
-    // $wp_content_generatorIsThumbnail = sanitize_text_field($_POST['wp_content_generator-thumbnail']);
-    // $wp_content_generatorIsTaxonomies = sanitize_text_field($_POST['wp_content_generator-taxonomies']);
-
-    $postFromDate = sanitize_text_field($_POST['wp_content_generator-post_from']);
-    $postToDate = sanitize_text_field($_POST['wp_content_generator-post_to']);
-
-    for ($i=0; $i < $loopLimit ; $i++) {
-        if ($remaining_asins === null || trim($remaining_asins) === ''){
-            $asin = '';
-        }else{
-            $asins_array = explode(' ', $remaining_asins);
-            $asin = current($asins_array);
-            $asin_key = array_search($asin, $asins_array);
-            unset($asins_array[$asin_key]);
-            $remaining_asins = implode(" ", $asins_array);
-        }
-        $generationStatus = wp_content_generatorGenerateAWSPosts(
-            $categories,
-            $category,
-            $post_user,
-            $asin,
-            $wp_content_generatorIsThumbnail,
-            $wp_content_generatorIsTaxonomies,
-            $postFromDate,
-            $postToDate
-        );
-    }
-    if($remaining_posts>=2){
-        $remaining_posts = $remaining_posts - 2;
-    }else{
-        $remaining_posts = 0;
-    }
-    echo json_encode(array('status' => 'success', 'message' => 'Posts generated successfully.', 'remaining_posts' => $remaining_posts, 'remaining_asins' => $remaining_asins));
-    die();
-}
-
-add_action("wp_ajax_wp_content_generatorAjaxGenAWSPosts", "wp_content_generatorAjaxGenAWSPosts");
 
 function wp_content_generatorGetFakePostsList(){
     $postsArr = wp_content_generatorGetPostTypes();

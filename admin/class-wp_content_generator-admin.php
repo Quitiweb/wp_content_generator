@@ -99,8 +99,8 @@ class wp_content_generator_Admin {
 
 		 wp_enqueue_script( 'dtable_'.$this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/jquery.dataTables.js', array( 'jquery' ), $this->version, false );
 		 wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/wp_content_generator-admin.js', array( 'jquery' ), $this->version, false );
-		 // wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/wp_content_generator-test.js', array( 'jquery' ), $this->version, false );
-		 wp_localize_script($this->plugin_name, 'wp_content_generator_backend_ajax_object',
+		 wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/wp_content_generator-test.js', array( 'jquery' ), $this->version, false );
+		 wp_localize_script( $this->plugin_name, 'wp_content_generator_backend_ajax_object',
 	        array( 
 	            'wp_content_generator_ajax_url' => admin_url( 'admin-ajax.php' ),
 	            'nonce' => wp_create_nonce('wpdcg-ajax-nonce')
