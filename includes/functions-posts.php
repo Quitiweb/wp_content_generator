@@ -221,9 +221,9 @@ function wp_content_generatorGenerateAWSPosts(
     if($postDateTo == ''){
         $postDateTo = date("Y-m-d");
     }
-    // $host = 'http://ec2-15-188-189-171.eu-west-3.compute.amazonaws.com';
+    $host = 'http://ec2-15-188-189-171.eu-west-3.compute.amazonaws.com';
     // $host = 'http://127.0.0.1:8000';
-    $host = 'https://post.quitiweb.com';
+    // $host = 'https://post.quitiweb.com';
     $base_url = sprintf("%s/%s", $host, 'post/aws/');
     $get_data = callAPI($base_url, $category, $asin);
 
@@ -268,7 +268,7 @@ function wp_content_generatorAjaxGenPosts () {
     $categories = $_POST['wp_content_generator-categories'];
     $post_user = sanitize_text_field($_POST['wp_content_generator-user']);
     $remaining_posts = sanitize_text_field($_POST['remaining_posts']);
-    $post_count = sanitize_text_field($_POST['wp_content_generator-post_count']);
+    // $post_count = sanitize_text_field($_POST['wp_content_generator-post_count']);
 
     if($remaining_posts>=2){
         $loopLimit = 2;
@@ -293,6 +293,7 @@ function wp_content_generatorAjaxGenPosts () {
             $postToDate
         );
     }
+
     if($remaining_posts>=2){
         $remaining_posts = $remaining_posts - 2;
     }else{
@@ -337,16 +338,18 @@ function wp_content_generatorAjaxGenAWSPosts () {
             $asin_key = array_search($asin, $asins_array);
             unset($asins_array[$asin_key]);
             $remaining_asins = implode(" ", $asins_array);
+
+            $generationStatus = wp_content_generatorGenerateAWSPosts(
+                $categories,
+                $category,
+                $post_user,
+                $asin,
+                $postFromDate,
+                $postToDate
+            );
         }
-        $generationStatus = wp_content_generatorGenerateAWSPosts(
-            $categories,
-            $category,
-            $post_user,
-            $asin,
-            $postFromDate,
-            $postToDate
-        );
     }
+
     if($remaining_posts>=2){
         $remaining_posts = $remaining_posts - 2;
     }else{

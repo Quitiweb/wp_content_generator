@@ -69,8 +69,6 @@
 	        </td>
         </tr>
 
-		<tr valign="top"><th scope="row"><hr /></th></tr>
-
         <tr valign="top">
 	        <th scope="row">Amazon SINs</th>
 	        <td>

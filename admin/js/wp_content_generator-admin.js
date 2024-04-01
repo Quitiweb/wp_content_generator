@@ -58,6 +58,7 @@
 		e("#wp_content_generatorGenPostForm").submit(function (n) {
             if (t) return !1; // Don't let someone submit the form while it is in-progress...
             n.preventDefault(); // Prevents the default form submit
+
             e(".remaining_posts").val(e(".wp_content_generator-post_count").val());
             var a = e(this);
 
@@ -104,11 +105,12 @@
         e("#wp_content_generatorGenAWSPostForm").submit(function (n) {
             if (t) return !1; // Don't let someone submit the form while it is in-progress...
             n.preventDefault(); // Prevents the default form submit
-            var asins = $('.wp_content_generator-post_asin').val();
+
+            var asins = e('.wp_content_generator-post_asin').val();
             var asins_array = asins.split(" ");
-            $(".remaining_posts").val(asins_array.length);
-            $(".remaining_asins").val(asins);
-			$(".total_posts").val(asins_array.length);
+            e(".remaining_posts").val(asins_array.length);
+            e(".remaining_asins").val(asins);
+			e(".total_posts").val(asins_array.length);
             var a = e(this);
 
             e(".dcsLoader").show(),
@@ -125,16 +127,16 @@
                         },
                         error: r,
                         success: function (a) {
-                            if ((e(".wp_content_generatorGenerateAWSPosts").val("Generate posts"), "success" === a.status && a.remaining_posts > 0)) {
+                            if ((e(".wp_content_generatorGenerateAWSPosts").val("Generate AWS posts"), "success" === a.status && a.remaining_posts > 0)) {
                                 e(".remaining_posts").val(a.remaining_posts);
                                 var s = e(".total_posts").val(),
-                                    d = Math.round(((s - a.remaining_asins) * 100) / s);
+                                    d = Math.round(((s - a.remaining_posts) * 100) / s);
                                 e(".wp_content_generatorLoaderPer").text(d + "%"),
                                     e(".wp_content_generatorLoaderWrpper").attr("class", "wp_content_generatorLoaderWrpper c100 blue"),
                                     e(".wp_content_generatorLoaderWrpper").addClass("p" + d),
                                     n(o);
-                            } else
-                                "success" === a.status && 0 == a.remaining_asins
+                            } else {
+                                "success" === a.status && 0 == a.remaining_posts
                                     ? (e(".wp_content_generator-success-msg").html("Posts generated successfully.").fadeIn("fast").delay(1e3).fadeOut("slow"),
                                       e(".wp_content_generatorLoaderPer").text("100%"),
                                       e(".wp_content_generatorLoaderWrpper").attr("class", "wp_content_generatorLoaderWrpper c100 blue"),
@@ -145,6 +147,7 @@
                                       e(".wp_content_generatorLoaderWrpper").addClass("p0"),
                                       (t = !1))
                                     : (r(), (t = !1));
+							}
                         },
                     });
                 })(a);
