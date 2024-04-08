@@ -11,21 +11,11 @@ function wp_content_generatorAjaxTest () {
     }
     $remaining_posts = sanitize_text_field($_POST['remaining_posts']);
 
-    if($remaining_posts>=2){
-        $loopLimit = 2;
-    }else{
-        $loopLimit = $remaining_posts;
+    if($remaining_posts>=1){
+        sleep(3);  // Simulates the function call
+        $remaining_posts = $remaining_posts - 1;
     }
 
-    for ($i=0; $i < $loopLimit ; $i++) {
-        sleep(5);
-    }
-
-    if($remaining_posts>=2){
-        $remaining_posts = $remaining_posts - 2;
-    }else{
-        $remaining_posts = 0;
-    }
     echo json_encode(array('status' => 'success', 'message' => 'Test Posts generated successfully.', 'remaining_posts' => $remaining_posts));
     die();
 }

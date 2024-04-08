@@ -130,6 +130,7 @@
                         success: function (a) {
                             if ((e(".wp_content_generatorGenerateAWSPosts").val("Generate AWS posts"), "success" === a.status && a.remaining_posts > 0)) {
                                 e(".remaining_posts").val(a.remaining_posts);
+								// e(".remaining_asins").val(a.remaining_asins);
                                 var s = e(".total_posts").val(),
                                     d = Math.round(((s - a.remaining_posts) * 100) / s);
                                 e(".wp_content_generatorLoaderPer").text(d + "%"),

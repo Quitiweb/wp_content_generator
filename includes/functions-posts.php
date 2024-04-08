@@ -268,21 +268,14 @@ function wp_content_generatorAjaxGenPosts () {
     $categories = $_POST['wp_content_generator-categories'];
     $post_user = sanitize_text_field($_POST['wp_content_generator-user']);
     $remaining_posts = sanitize_text_field($_POST['remaining_posts']);
-    // $post_count = sanitize_text_field($_POST['wp_content_generator-post_count']);
 
-    if($remaining_posts>=2){
-        $loopLimit = 2;
-    }else{
-        $loopLimit = $remaining_posts;
-    }
+    if($remaining_posts>=1){
+        // $wp_content_generatorIsThumbnail = sanitize_text_field($_POST['wp_content_generator-thumbnail']);
+        // $wp_content_generatorIsTaxonomies = sanitize_text_field($_POST['wp_content_generator-taxonomies']);
 
-    // $wp_content_generatorIsThumbnail = sanitize_text_field($_POST['wp_content_generator-thumbnail']);
-    // $wp_content_generatorIsTaxonomies = sanitize_text_field($_POST['wp_content_generator-taxonomies']);
+        $postFromDate = sanitize_text_field($_POST['wp_content_generator-post_from']);
+        $postToDate = sanitize_text_field($_POST['wp_content_generator-post_to']);
 
-    $postFromDate = sanitize_text_field($_POST['wp_content_generator-post_from']);
-    $postToDate = sanitize_text_field($_POST['wp_content_generator-post_to']);
-
-    for ($i=0; $i < $loopLimit ; $i++) {
         $generationStatus = wp_content_generatorGeneratePosts(
             $categories,
             $category,
@@ -292,13 +285,10 @@ function wp_content_generatorAjaxGenPosts () {
             $postFromDate,
             $postToDate
         );
+
+        $remaining_posts = $remaining_posts - 1;
     }
 
-    if($remaining_posts>=2){
-        $remaining_posts = $remaining_posts - 2;
-    }else{
-        $remaining_posts = 0;
-    }
     echo json_encode(array('status' => 'success', 'message' => 'Posts generated successfully.', 'remaining_posts' => $remaining_posts));
     die();
 }
@@ -318,27 +308,22 @@ function wp_content_generatorAjaxGenAWSPosts () {
     $post_user = sanitize_text_field($_POST['wp_content_generator-user']);
     $remaining_asins = sanitize_text_field($_POST['remaining_asins']);
     $remaining_posts = sanitize_text_field($_POST['remaining_posts']);
-    // $total_posts = sanitize_text_field($_POST['total_posts']);
 
-    if($remaining_posts>=2){
-        $loopLimit = 2;
-    }else{
-        $loopLimit = $remaining_posts;
-    }
+    if($remaining_posts>=1){
 
-    $postFromDate = sanitize_text_field($_POST['wp_content_generator-post_from']);
-    $postToDate = sanitize_text_field($_POST['wp_content_generator-post_to']);
+        $postFromDate = sanitize_text_field($_POST['wp_content_generator-post_from']);
+        $postToDate = sanitize_text_field($_POST['wp_content_generator-post_to']);
 
-    for ($i=0; $i < $loopLimit ; $i++) {
         if ($remaining_asins === null || trim($remaining_asins) === ''){
             $asin = '';
         }else{
-            $asins_array = explode(' ', $remaining_asins);
+            $asins_array = explode(" ", $remaining_asins);
             $asin = current($asins_array);
             $asin_key = array_search($asin, $asins_array);
             unset($asins_array[$asin_key]);
             $remaining_asins = implode(" ", $asins_array);
 
+            sleep(3);
             $generationStatus = wp_content_generatorGenerateAWSPosts(
                 $categories,
                 $category,
@@ -348,13 +333,10 @@ function wp_content_generatorAjaxGenAWSPosts () {
                 $postToDate
             );
         }
+
+        $remaining_posts = $remaining_posts - 1;
     }
 
-    if($remaining_posts>=2){
-        $remaining_posts = $remaining_posts - 2;
-    }else{
-        $remaining_posts = 0;
-    }
     echo json_encode(array('status' => 'success', 'message' => 'Posts generated successfully.', 'remaining_posts' => $remaining_posts, 'remaining_asins' => $remaining_asins));
     die();
 }
