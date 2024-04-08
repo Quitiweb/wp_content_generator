@@ -167,8 +167,9 @@ function wp_content_generatorGeneratePosts(
     if($postDateTo == ''){
         $postDateTo = date("Y-m-d");
     }
+    $host = 'http://ec2-15-188-189-171.eu-west-3.compute.amazonaws.com';
     // $host = 'http://127.0.0.1:8000';
-    $host = 'https://post.quitiweb.com';
+    // $host = 'https://post.quitiweb.com';
     $base_url = sprintf("%s/%s", $host, 'post/generate/');
     $get_data = callAPI($base_url, $category, false);
 
