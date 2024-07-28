@@ -7,7 +7,7 @@ function wp_content_generatorDashboard(){
     // add_submenu_page ( 'wp_content_generator-dashboard', 'Users', 'Users', 'read', 'wp_content_generator-users', 'wp_content_generatorUsers');
     add_submenu_page ( 'wp_content_generator-dashboard', 'Posts', 'Posts', 'read', 'wp_content_generator-posts', 'wp_content_generatorPosts');
     // add_submenu_page ( 'wp_content_generator-dashboard', 'Products', 'Products', 'read', 'wp_content_generator-products', 'wp_content_generatorProducts');
-    add_submenu_page ( 'wp_content_generator-dashboard', 'Tests', 'Tests', 'read', 'wp_content_generator-test', 'wp_content_generatorTest');
+    // add_submenu_page ( 'wp_content_generator-dashboard', 'Tests', 'Tests', 'read', 'wp_content_generator-test', 'wp_content_generatorTest');
 }
 
 function wp_content_generatorMainDashboard(){

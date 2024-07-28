@@ -167,7 +167,8 @@ function wp_content_generatorGeneratePosts(
     if($postDateTo == ''){
         $postDateTo = date("Y-m-d");
     }
-    $host = 'http://ec2-15-188-189-171.eu-west-3.compute.amazonaws.com';
+    $host = get_option('wp_content_generator_api_url');
+    // $host = 'http://ec2-15-188-189-171.eu-west-3.compute.amazonaws.com';
     // $host = 'http://127.0.0.1:8000';
     // $host = 'https://post.quitiweb.com';
     $base_url = sprintf("%s/%s", $host, 'post/generate/');
@@ -222,7 +223,8 @@ function wp_content_generatorGenerateAWSPosts(
     if($postDateTo == ''){
         $postDateTo = date("Y-m-d");
     }
-    $host = 'http://ec2-15-188-189-171.eu-west-3.compute.amazonaws.com';
+    $host = get_option('wp_content_generator_api_url');
+    // $host = 'http://ec2-15-188-189-171.eu-west-3.compute.amazonaws.com';
     // $host = 'http://127.0.0.1:8000';
     // $host = 'https://post.quitiweb.com';
     $base_url = sprintf("%s/%s", $host, 'post/aws/');
@@ -412,6 +414,21 @@ function save_wp_content_generator_api_key() {
     if ( isset( $_POST['wp_content_generator_api_key'] ) ) {
         // Guarda la clave API en la base de datos
         update_option( 'wp_content_generator_api_key', sanitize_text_field( $_POST['wp_content_generator_api_key'] ) );
+    }
+    // Redirige de vuelta a la página de administración
+    wp_redirect( $_SERVER['HTTP_REFERER'] );
+    exit;
+}
+
+/**
+ * Action hook to save API Url
+ */
+add_action( 'admin_post_save_wp_content_generator_api_url', 'save_wp_content_generator_api_url' );
+
+function save_wp_content_generator_api_url() {
+    if ( isset( $_POST['wp_content_generator_api_url'] ) ) {
+        // Guarda la url de la API en la base de datos
+        update_option( 'wp_content_generator_api_url', sanitize_text_field( $_POST['wp_content_generator_api_url'] ) );
     }
     // Redirige de vuelta a la página de administración
     wp_redirect( $_SERVER['HTTP_REFERER'] );

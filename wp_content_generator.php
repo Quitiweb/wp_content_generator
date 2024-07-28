@@ -75,7 +75,7 @@ add_action("wp_loaded", "wp_content_generatorAllLoaded");
 function wp_content_generatorAllLoaded(){
     require_once plugin_dir_path( __FILE__ ) . 'includes/functions.php';
     require_once plugin_dir_path( __FILE__ ) . 'includes/functions-posts.php';
-    require_once plugin_dir_path( __FILE__ ) . 'includes/functions-test.php';
+    // require_once plugin_dir_path( __FILE__ ) . 'includes/functions-test.php';
 }
 
 /**
