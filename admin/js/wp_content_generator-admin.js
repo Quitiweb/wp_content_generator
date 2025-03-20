@@ -138,12 +138,48 @@
                 alert('Por favor, introduce al menos un ASIN');
                 return false;
             }
-            var asins_array = asins.split(/\s+/);
+            
+            // Dividir ASINs y procesar uno por uno
+            var asins_array = asins.split(/\s+/).filter(asin => asin.length > 0);
             e(".remaining_posts").val(asins_array.length);
             e(".remaining_asins").val(asins_array.join(" "));
-            e(".total_posts").val(asins_array.length);
-            e(".generation_status").html("Iniciando generación de " + asins_array.length + " posts...");
-            var a = e(this);
+            
+            // Procesar el primer ASIN
+            processNextAsin(asins_array);
+            return false;
+        });
+
+        function processNextAsin(asins_array) {
+            if (asins_array.length === 0) {
+                e(".generation_status").html("¡Completado!");
+                return;
+            }
+
+            var currentAsin = asins_array[0];
+            var remainingAsins = asins_array.slice(1).join(" ");
+            
+            e(".remaining_asins").val(remainingAsins);
+            e(".remaining_posts").val(asins_array.length - 1);
+            e(".generation_status").html("Procesando ASIN: " + currentAsin);
+
+            var formData = e("#wp_content_generatorGenAWSPostForm").serialize();
+            e.ajax({
+                url: wp_content_generator_backend_ajax_object.wp_content_generator_ajax_url,
+                type: "POST",
+                data: formData,
+                success: function(response) {
+                    if (response.status === "success") {
+                        // Procesar siguiente ASIN
+                        processNextAsin(asins_array.slice(1));
+                    } else {
+                        e(".generation_status").html("Error: " + response.message);
+                    }
+                },
+                error: function() {
+                    e(".generation_status").html("Error en la llamada AJAX");
+                }
+            });
+        }(this);
 
             e(".dcsLoader").show(),
                 (function n(a) {
