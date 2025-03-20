@@ -232,6 +232,9 @@ function wp_content_generatorGenerateAWSPosts(
 
     // Decodifica los datos JSON obtenidos
     $data = json_decode($get_data, true);
+    if (isset($data['error'])) {
+        return 'error:' . $data['message'];
+    }
     $title = $data['title'];
     $description = $data['description'];
 

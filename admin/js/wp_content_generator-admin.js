@@ -10,7 +10,7 @@
                 o = e(this).attr("id");
             console.log(o);
             var s = "";
-            
+
 			// Delete posts section
 			switch (o) {
                 case "wp-admin-bar-wp_content_generatorDeleteUsers":
@@ -50,7 +50,7 @@
         e("#wp_content_generatorListProductsTbl").DataTable();
 
         var t = !1;
-        
+
 		function r() {
             (t = !1), e(".wp_content_generator-error-msg").html("Something went wrong. Please try again").fadeIn("fast").delay(1e3).fadeOut("slow");
         }
@@ -73,11 +73,25 @@
                         dataType: "JSON",
                         data: o.serialize(),
                         beforeSend: function () {
-                            (t = !0), e(".wp_content_generatorGeneratePosts").val("Generating posts...");
+                            t = !0;
+                            e(".wp_content_generatorGeneratePosts").val("Generating posts...");
+                            e(".wp_content_generator-info-msg").html("Generando post...").fadeIn('fast');
                         },
-                        error: r,
+                        error: function() {
+                            e(".wp_content_generator-error-msg").html("Error de conexión al generar los posts").fadeIn('fast').delay(3000).fadeOut('slow');
+                            t = false;
+                        },
                         success: function (a) {
-                            if ((e(".wp_content_generatorGeneratePosts").val("Generate posts"), "success" === a.status && a.remaining_posts > 0)) {
+                            e(".wp_content_generatorGeneratePosts").val("Generate posts");
+                            e(".wp_content_generator-info-msg").fadeOut('fast');
+
+                            if (a.status === 'error' || (a.message && a.message.startsWith('error:'))) {
+                                e(".wp_content_generator-error-msg").html(a.message.replace('error:', '')).fadeIn('fast').delay(3000).fadeOut('slow');
+                                t = false;
+                                return;
+                            }
+
+                            if ("success" === a.status && a.remaining_posts > 0) {
                                 e(".remaining_posts").val(a.remaining_posts);
                                 var s = e(".wp_content_generator-post_count").val(),
                                     d = Math.round(((s - a.remaining_posts) * 100) / s);
@@ -124,13 +138,27 @@
                         dataType: "JSON",
                         data: o.serialize(),
                         beforeSend: function () {
-                            (t = !0), e(".wp_content_generatorGenerateAWSPosts").val("Generating posts...");
+                            t = !0;
+                            e(".wp_content_generatorGenerateAWSPosts").val("Generating posts...");
+                            e(".wp_content_generator-info-msg").html("Generando post...").fadeIn('fast');
                         },
-                        error: r,
+                        error: function() {
+                            e(".wp_content_generator-error-msg").html("Error de conexión al generar los posts").fadeIn('fast').delay(3000).fadeOut('slow');
+                            t = false;
+                        },
                         success: function (a) {
-                            if ((e(".wp_content_generatorGenerateAWSPosts").val("Generate AWS posts"), "success" === a.status && a.remaining_posts > 0)) {
+                            e(".wp_content_generatorGenerateAWSPosts").val("Generate AWS posts");
+                            e(".wp_content_generator-info-msg").fadeOut('fast');
+
+                            if (a.status === 'error' || (a.message && a.message.startsWith('error:'))) {
+                                e(".wp_content_generator-error-msg").html(a.message.replace('error:', '')).fadeIn('fast').delay(3000).fadeOut('slow');
+                                t = false;
+                                return;
+                            }
+
+                            if ("success" === a.status && a.remaining_posts > 0) {
                                 e(".remaining_posts").val(a.remaining_posts);
-								// e(".remaining_asins").val(a.remaining_asins);
+                                // e(".remaining_asins").val(a.remaining_asins);
                                 var s = e(".total_posts").val(),
                                     d = Math.round(((s - a.remaining_posts) * 100) / s);
                                 e(".wp_content_generatorLoaderPer").text(d + "%"),
@@ -164,7 +192,7 @@
 
             e(".remaining_posts").val(e(".wp_content_generator-post_count").val());
             var a = e(this);
-            
+
 			e(".dcsLoader").show(),
 				(function n(a) {
 					var o = a,
@@ -175,11 +203,25 @@
 						dataType: "JSON",
 						data: o.serialize(),
 						beforeSend: function () {
-							(t = !0), e(".wp_content_generatorGenerateTest").val("Generating posts...");
+							t = !0;
+							e(".wp_content_generatorGenerateTest").val("Generating posts...");
+							e(".wp_content_generator-info-msg").html("Generando post...").fadeIn('fast');
 						},
-						error: r,
+						error: function() {
+							e(".wp_content_generator-error-msg").html("Error de conexión al generar los posts").fadeIn('fast').delay(3000).fadeOut('slow');
+							t = false;
+						},
 						success: function (a) {
-							if ((e(".wp_content_generatorGenerateTest").val("Generate Test posts"), "success" === a.status && a.remaining_posts > 0)) {
+							e(".wp_content_generatorGenerateTest").val("Generate Test posts");
+							e(".wp_content_generator-info-msg").fadeOut('fast');
+
+							if (a.status === 'error' || (a.message && a.message.startsWith('error:'))) {
+								e(".wp_content_generator-error-msg").html(a.message.replace('error:', '')).fadeIn('fast').delay(3000).fadeOut('slow');
+								t = false;
+								return;
+							}
+
+							if ("success" === a.status && a.remaining_posts > 0) {
 								console.log('Entramos en el IF');
 								e(".remaining_posts").val(a.remaining_posts);
 								var s = e(".wp_content_generator-post_count").val(),
@@ -261,7 +303,7 @@
 			n.preventDefault(),
 				e(".remaining_users").val(e(".wp_content_generator-user_count").val()),
 				e(".dcsLoader").show(),
-                
+
 				(function n(a) {
 					var o = a,
 						s = wp_content_generator_backend_ajax_object.wp_content_generator_ajax_url;
