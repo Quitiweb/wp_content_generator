@@ -129,6 +129,9 @@ function callAPI($url, $category, $asin){
     if($asin){
         $api_url .= sprintf("&asin=%s", $asin);
     }
+    
+    // Log the URL being constructed
+    error_log('API URL being called: ' . $api_url);
 
     // Recupera el Token para autorizar las llamadas a la API
     $api_key = get_option('wp_content_generator_api_key');
