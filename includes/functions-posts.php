@@ -322,38 +322,39 @@ function wp_content_generatorAjaxGenAWSPosts () {
     $remaining_asins = sanitize_text_field($_POST['remaining_asins']);
     $remaining_posts = sanitize_text_field($_POST['remaining_posts']);
 
-    if($remaining_posts>=1){
+    if($remaining_posts >= 1 && !empty($remaining_asins)){
         $postFromDate = sanitize_text_field($_POST['wp_content_generator-post_from']);
         $postToDate = sanitize_text_field($_POST['wp_content_generator-post_to']);
+        
+        $asins_array = preg_split('/\s+/', trim($remaining_asins));
+        $current_asin = array_shift($asins_array); // Get and remove first element
+        $remaining_asins = implode(" ", $asins_array);
+        $remaining_posts = count($asins_array);
 
-        if ($remaining_asins === null || trim($remaining_asins) === ''){
-            $asin = '';
-        }else{
-            $asins_array = preg_split('/\s+/', trim($remaining_asins));
-            $asin = array_shift($asins_array); // Get and remove first element
-            $remaining_asins = implode(" ", $asins_array);
+        if($current_asin) {
+            $generationStatus = wp_content_generatorGenerateAWSPosts(
+                $categories,
+                $category,
+                $post_user,
+                $current_asin,
+                $postFromDate,
+                $postToDate
+            );
 
-            if($asin) {
-                $generationStatus = wp_content_generatorGenerateAWSPosts(
-                    $categories,
-                    $category,
-                    $post_user,
-                    $asin,
-                    $postFromDate,
-                    $postToDate
-                );
-
-                if (strpos($generationStatus, 'error:') === 0) {
-                    echo json_encode(array('status' => 'error', 'message' => substr($generationStatus, 6)));
-                    die();
-                }
+            if (strpos($generationStatus, 'error:') === 0) {
+                echo json_encode(array('status' => 'error', 'message' => substr($generationStatus, 6)));
+                die();
             }
         }
-
-        $remaining_posts = count($asins_array);
     }
 
-    echo json_encode(array('status' => 'success', 'message' => 'Posts generated successfully.', 'remaining_posts' => $remaining_posts, 'remaining_asins' => $remaining_asins));
+    echo json_encode(array(
+        'status' => 'success', 
+        'message' => 'Post generated successfully.', 
+        'remaining_posts' => $remaining_posts,
+        'remaining_asins' => $remaining_asins,
+        'current_asin' => $current_asin
+    ));
     die();
 }
 
