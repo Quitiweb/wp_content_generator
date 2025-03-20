@@ -1200,3 +1200,21 @@ a.wp_content_generator-btn.wp_content_generator-btnRed:hover {
 .wp_content_generatorPanelBody p {
     font-size: 15px;
 }
+
+.wp_content_generator-success-msg {
+    padding: 10px;
+    margin: 10px 0;
+    background-color: #dff0d8;
+    border: 1px solid #d6e9c6;
+    color: #3c763d;
+    border-radius: 4px;
+}
+
+.wp_content_generator-error-msg {
+    padding: 10px;
+    margin: 10px 0;
+    background-color: #f2dede;
+    border: 1px solid #ebccd1;
+    color: #a94442;
+    border-radius: 4px;
+}

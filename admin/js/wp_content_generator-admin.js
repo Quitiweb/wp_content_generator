@@ -38,7 +38,14 @@
                     },
                     error: r,
                     success: function (t) {
-                        e(".wp_content_generatorLoading").remove(), "success" === t.status ? console.log("success") : r();
+                        e(".wp_content_generatorLoading").remove();
+                        if ("success" === t.status) {
+                            if (t.message) {
+                                e(".wp_content_generator-success-msg").html(t.message).show().delay(3000).fadeOut();
+                            }
+                        } else {
+                            r();
+                        }
                     },
                 }),
                 console.log(s);
@@ -99,18 +106,23 @@
                                     e(".wp_content_generatorLoaderWrpper").attr("class", "wp_content_generatorLoaderWrpper c100 blue"),
                                     e(".wp_content_generatorLoaderWrpper").addClass("p" + d),
                                     n(o);
-                            } else
-                                "success" === a.status && 0 == a.remaining_posts
-                                    ? (e(".wp_content_generator-success-msg").html("Posts generated successfully.").fadeIn("fast").delay(1e3).fadeOut("slow"),
-                                      e(".wp_content_generatorLoaderPer").text("100%"),
-                                      e(".wp_content_generatorLoaderWrpper").attr("class", "wp_content_generatorLoaderWrpper c100 blue"),
-                                      e(".wp_content_generatorLoaderWrpper").addClass("p100"),
-                                      e(".dcsLoader").hide(),
-                                      e(".wp_content_generatorLoaderPer").text("0%"),
-                                      e(".wp_content_generatorLoaderWrpper").attr("class", "wp_content_generatorLoaderWrpper c100 blue"),
-                                      e(".wp_content_generatorLoaderWrpper").addClass("p0"),
-                                      (t = !1))
-                                    : (r(), (t = !1));
+                            } else if ("success" === a.status && 0 == a.remaining_posts) {
+                                if (a.message) {
+                                    e(".wp_content_generator-success-msg").html(a.message).fadeIn("fast").delay(1e3).fadeOut("slow");
+                                } else {
+                                    e(".wp_content_generator-success-msg").html("Posts generated successfully.").fadeIn("fast").delay(1e3).fadeOut("slow");
+                                }
+                                e(".wp_content_generatorLoaderPer").text("100%"),
+                                    e(".wp_content_generatorLoaderWrpper").attr("class", "wp_content_generatorLoaderWrpper c100 blue"),
+                                    e(".wp_content_generatorLoaderWrpper").addClass("p100"),
+                                    e(".dcsLoader").hide(),
+                                    e(".wp_content_generatorLoaderPer").text("0%"),
+                                    e(".wp_content_generatorLoaderWrpper").attr("class", "wp_content_generatorLoaderWrpper c100 blue"),
+                                    e(".wp_content_generatorLoaderWrpper").addClass("p0"),
+                                    (t = !1);
+                            } else {
+                                r(), (t = !1);
+                            }
                         },
                     });
                 })(a);
@@ -165,18 +177,23 @@
                                     e(".wp_content_generatorLoaderWrpper").attr("class", "wp_content_generatorLoaderWrpper c100 blue"),
                                     e(".wp_content_generatorLoaderWrpper").addClass("p" + d),
                                     n(o);
-                            } else
-                                "success" === a.status && 0 == a.remaining_posts
-                                    ? (e(".wp_content_generator-success-msg").html("Posts generated successfully.").fadeIn("fast").delay(1e3).fadeOut("slow"),
-                                      e(".wp_content_generatorLoaderPer").text("100%"),
-                                      e(".wp_content_generatorLoaderWrpper").attr("class", "wp_content_generatorLoaderWrpper c100 blue"),
-                                      e(".wp_content_generatorLoaderWrpper").addClass("p100"),
-                                      e(".dcsLoader").hide(),
-                                      e(".wp_content_generatorLoaderPer").text("0%"),
-                                      e(".wp_content_generatorLoaderWrpper").attr("class", "wp_content_generatorLoaderWrpper c100 blue"),
-                                      e(".wp_content_generatorLoaderWrpper").addClass("p0"),
-                                      (t = !1))
-                                    : (r(), (t = !1));
+                            } else if ("success" === a.status && 0 == a.remaining_posts) {
+                                if (a.message) {
+                                    e(".wp_content_generator-success-msg").html(a.message).fadeIn("fast").delay(1e3).fadeOut("slow");
+                                } else {
+                                    e(".wp_content_generator-success-msg").html("Posts generated successfully.").fadeIn("fast").delay(1e3).fadeOut("slow");
+                                }
+                                e(".wp_content_generatorLoaderPer").text("100%"),
+                                    e(".wp_content_generatorLoaderWrpper").attr("class", "wp_content_generatorLoaderWrpper c100 blue"),
+                                    e(".wp_content_generatorLoaderWrpper").addClass("p100"),
+                                    e(".dcsLoader").hide(),
+                                    e(".wp_content_generatorLoaderPer").text("0%"),
+                                    e(".wp_content_generatorLoaderWrpper").attr("class", "wp_content_generatorLoaderWrpper c100 blue"),
+                                    e(".wp_content_generatorLoaderWrpper").addClass("p0"),
+                                    (t = !1);
+                            } else {
+                                r(), (t = !1);
+                            }
                         },
                     });
                 })(a);
@@ -230,18 +247,23 @@
 									e(".wp_content_generatorLoaderWrpper").attr("class", "wp_content_generatorLoaderWrpper c100 blue"),
 									e(".wp_content_generatorLoaderWrpper").addClass("p" + d),
 									n(o);
-							} else
-								"success" === a.status && 0 == a.remaining_posts
-									? (e(".wp_content_generator-success-msg").html("Posts generated successfully.").fadeIn("fast").delay(1e3).fadeOut("slow"),
-										e(".wp_content_generatorLoaderPer").text("100%"),
-										e(".wp_content_generatorLoaderWrpper").attr("class", "wp_content_generatorLoaderWrpper c100 blue"),
-										e(".wp_content_generatorLoaderWrpper").addClass("p100"),
-										e(".dcsLoader").hide(),
-										e(".wp_content_generatorLoaderPer").text("0%"),
-										e(".wp_content_generatorLoaderWrpper").attr("class", "wp_content_generatorLoaderWrpper c100 blue"),
-										e(".wp_content_generatorLoaderWrpper").addClass("p0"),
-										(t = !1))
-									: (r(), (t = !1));
+							} else if ("success" === a.status && 0 == a.remaining_posts) {
+                                if (a.message) {
+                                    e(".wp_content_generator-success-msg").html(a.message).fadeIn("fast").delay(1e3).fadeOut("slow");
+                                } else {
+                                    e(".wp_content_generator-success-msg").html("Posts generated successfully.").fadeIn("fast").delay(1e3).fadeOut("slow");
+                                }
+                                e(".wp_content_generatorLoaderPer").text("100%"),
+                                    e(".wp_content_generatorLoaderWrpper").attr("class", "wp_content_generatorLoaderWrpper c100 blue"),
+                                    e(".wp_content_generatorLoaderWrpper").addClass("p100"),
+                                    e(".dcsLoader").hide(),
+                                    e(".wp_content_generatorLoaderPer").text("0%"),
+                                    e(".wp_content_generatorLoaderWrpper").attr("class", "wp_content_generatorLoaderWrpper c100 blue"),
+                                    e(".wp_content_generatorLoaderWrpper").addClass("p0"),
+                                    (t = !1);
+                            } else {
+                                r(), (t = !1);
+                            }
 						},
 					});
 				})(a);
@@ -273,7 +295,7 @@
 						},
 						error: r,
 						success: function (a) {
-							if ((e(".wp_content_generatorGenerateProducts").val("Generate products."), "success" === a.status && a.remaining_products > 0)) {
+							if ("success" === a.status && a.remaining_products > 0) {
 								e(".remaining_products").val(a.remaining_products);
 								var s = e(".wp_content_generator-product_count").val(),
 									d = Math.round(((s - a.remaining_products) * 100) / s);
@@ -281,18 +303,23 @@
 									e(".wp_content_generatorLoaderWrpper").attr("class", "wp_content_generatorLoaderWrpper c100 blue"),
 									e(".wp_content_generatorLoaderWrpper").addClass("p" + d),
 									n(o);
-							} else
-								"success" === a.status && 0 == a.remaining_products
-									? (e(".wp_content_generatorLoaderPer").text("100%"),
-										e(".wp_content_generatorLoaderWrpper").attr("class", "wp_content_generatorLoaderWrpper c100 blue"),
-										e(".wp_content_generatorLoaderWrpper").addClass("p100"),
-										e(".dcsLoader").hide(),
-										e(".wp_content_generatorLoaderPer").text("0%"),
-										e(".wp_content_generatorLoaderWrpper").attr("class", "wp_content_generatorLoaderWrpper c100 blue"),
-										e(".wp_content_generatorLoaderWrpper").addClass("p0"),
-										e(".wp_content_generator-success-msg").html("Products generated successfully.").fadeIn("fast").delay(1e3).fadeOut("slow"),
-										(t = !1))
-									: (r(), (t = !1));
+							} else if ("success" === a.status && 0 == a.remaining_products) {
+                                if (a.message) {
+                                    e(".wp_content_generator-success-msg").html(a.message).fadeIn("fast").delay(1e3).fadeOut("slow");
+                                } else {
+                                    e(".wp_content_generator-success-msg").html("Products generated successfully.").fadeIn("fast").delay(1e3).fadeOut("slow");
+                                }
+								e(".wp_content_generatorLoaderPer").text("100%"),
+									e(".wp_content_generatorLoaderWrpper").attr("class", "wp_content_generatorLoaderWrpper c100 blue"),
+									e(".wp_content_generatorLoaderWrpper").addClass("p100"),
+									e(".dcsLoader").hide(),
+									e(".wp_content_generatorLoaderPer").text("0%"),
+									e(".wp_content_generatorLoaderWrpper").attr("class", "wp_content_generatorLoaderWrpper c100 blue"),
+									e(".wp_content_generatorLoaderWrpper").addClass("p0"),
+									(t = !1);
+                            } else {
+                                r(), (t = !1);
+                            }
 						},
 					});
 				})(a);
@@ -325,19 +352,24 @@
 									e(".wp_content_generatorLoaderWrpper").attr("class", "wp_content_generatorLoaderWrpper c100 blue"),
 									e(".wp_content_generatorLoaderWrpper").addClass("p" + d),
 									n(o);
-							} else
-								"success" === a.status && 0 == a.remaining_users
-									? (e(".wp_content_generator-success-msg").html("Users generated successfully.").fadeIn("fast").delay(1e3).fadeOut("slow"),
-										e(".wp_content_generatorLoaderPer").text("100%"),
-										e(".wp_content_generatorLoaderWrpper").attr("class", "wp_content_generatorLoaderWrpper c100 blue"),
-										e(".wp_content_generatorLoaderWrpper").addClass("p100"),
-										e(".dcsLoader").hide(),
-										e(".wp_content_generatorLoaderPer").text("0%"),
-										e(".wp_content_generatorLoaderWrpper").attr("class", "wp_content_generatorLoaderWrpper c100 blue"),
-										e(".wp_content_generatorLoaderWrpper").addClass("p0"),
-										e(".wp_content_generatorGenerateUsers").val("Generate users."),
-										(t = !1))
-									: (r(), (t = !1));
+							} else if ("success" === a.status && 0 == a.remaining_users) {
+                                if (a.message) {
+                                    e(".wp_content_generator-success-msg").html(a.message).fadeIn("fast").delay(1e3).fadeOut("slow");
+                                } else {
+                                    e(".wp_content_generator-success-msg").html("Users generated successfully.").fadeIn("fast").delay(1e3).fadeOut("slow");
+                                }
+								e(".wp_content_generatorLoaderPer").text("100%"),
+									e(".wp_content_generatorLoaderWrpper").attr("class", "wp_content_generatorLoaderWrpper c100 blue"),
+									e(".wp_content_generatorLoaderWrpper").addClass("p100"),
+									e(".dcsLoader").hide(),
+									e(".wp_content_generatorLoaderPer").text("0%"),
+									e(".wp_content_generatorLoaderWrpper").attr("class", "wp_content_generatorLoaderWrpper c100 blue"),
+									e(".wp_content_generatorLoaderWrpper").addClass("p0"),
+									e(".wp_content_generatorGenerateUsers").val("Generate users."),
+									(t = !1);
+                            } else {
+                                r(), (t = !1);
+                            }
 						},
 					});
 				})(e(this));
