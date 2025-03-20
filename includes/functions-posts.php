@@ -38,7 +38,7 @@ function wp_content_generatorGetUsers(){
     foreach($users as $user) {
         $users_array[$user->ID] = $user->display_name;
     }
-    
+
     return $users_array;
 }
 
@@ -51,7 +51,7 @@ function wp_content_generatorGetCategory(){
 		$sname = slugify($cat->name);
 		$posttypes_array[$sname] = $cat->name;
 	}
-	
+
     return $posttypes_array;
 }
 
@@ -70,7 +70,7 @@ function wp_content_generatorGetCategories(){
         'taxonomy'    => 'category',
         'pad_counts'  => false
 	));
-	
+
     return $categories;
 }
 
@@ -321,20 +321,20 @@ function wp_content_generatorAjaxGenAWSPosts () {
             $asin = '';
         }else{
             $asins_array = explode(" ", $remaining_asins);
-            $asin = current($asins_array);
-            $asin_key = array_search($asin, $asins_array);
-            unset($asins_array[$asin_key]);
+            $asin = array_shift($asins_array); // Get and remove first element
             $remaining_asins = implode(" ", $asins_array);
 
-            sleep(3);
-            $generationStatus = wp_content_generatorGenerateAWSPosts(
-                $categories,
-                $category,
-                $post_user,
-                $asin,
-                $postFromDate,
-                $postToDate
-            );
+            if($asin) {
+                sleep(3);
+                $generationStatus = wp_content_generatorGenerateAWSPosts(
+                    $categories,
+                    $category,
+                    $post_user,
+                    $asin,
+                    $postFromDate,
+                    $postToDate
+                );
+            }
         }
 
         $remaining_posts = $remaining_posts - 1;
@@ -433,4 +433,11 @@ function save_wp_content_generator_api_url() {
     // Redirige de vuelta a la página de administración
     wp_redirect( $_SERVER['HTTP_REFERER'] );
     exit;
+}
+
+function wp_content_generatorRandomDate($postDateFrom, $postDateTo){
+    $start = strtotime($postDateFrom);
+    $end = strtotime($postDateTo);
+    $timestamp = mt_rand($start, $end);
+    return date('Y-m-d H:i:s', $timestamp);
 }
