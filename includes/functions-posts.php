@@ -231,10 +231,14 @@ function wp_content_generatorGenerateAWSPosts(
     // $host = 'http://127.0.0.1:8000';
     // $host = 'https://post.quitiweb.com';
     $base_url = sprintf("%s/%s", $host, 'post/aws/');
+    sleep(2); // Añadimos una pequeña pausa entre llamadas
     $get_data = callAPI($base_url, $category, $asin);
 
     // Decodifica los datos JSON obtenidos
     $data = json_decode($get_data, true);
+    if (!$get_data || json_last_error() !== JSON_ERROR_NONE) {
+        return 'error: Error decodificando respuesta de la API';
+    }
     if (isset($data['error'])) {
         return 'error:' . $data['message'];
     }

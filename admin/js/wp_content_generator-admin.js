@@ -130,14 +130,19 @@
 
         // Función JS para la generación de Posts AWS
         e("#wp_content_generatorGenAWSPostForm").submit(function (n) {
-            if (t) return !1; // Don't let someone submit the form while it is in-progress...
-            n.preventDefault(); // Prevents the default form submit
+            if (t) return !1;
+            n.preventDefault();
 
-            var asins = e('.wp_content_generator-post_asin').val();
-            var asins_array = asins.split(" ");
+            var asins = e('.wp_content_generator-post_asin').val().trim();
+            if (!asins) {
+                alert('Por favor, introduce al menos un ASIN');
+                return false;
+            }
+            var asins_array = asins.split(/\s+/);
             e(".remaining_posts").val(asins_array.length);
-            e(".remaining_asins").val(asins);
-			e(".total_posts").val(asins_array.length);
+            e(".remaining_asins").val(asins_array.join(" "));
+            e(".total_posts").val(asins_array.length);
+            e(".generation_status").html("Iniciando generación de " + asins_array.length + " posts...");
             var a = e(this);
 
             e(".dcsLoader").show(),
