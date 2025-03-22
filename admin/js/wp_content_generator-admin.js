@@ -107,10 +107,15 @@
                                     e(".wp_content_generatorLoaderWrpper").addClass("p" + d),
                                     n(o);
                             } else if ("success" === a.status && 0 == a.remaining_posts) {
+                                var messageElement = e(".wp_content_generator-success-msg");
+                                if (messageElement.length === 0) {
+                                    e("body").append('<div class="wp_content_generator-success-msg"></div>');
+                                    messageElement = e(".wp_content_generator-success-msg");
+                                }
                                 if (a.message) {
-                                    e(".wp_content_generator-success-msg").html(a.message).fadeIn("fast").delay(1e3).fadeOut("slow");
+                                    messageElement.html(a.message).fadeIn("fast").delay(1e3).fadeOut("slow");
                                 } else {
-                                    e(".wp_content_generator-success-msg").html("Posts generated successfully.").fadeIn("fast").delay(1e3).fadeOut("slow");
+                                    messageElement.html("Posts generated successfully.").fadeIn("fast").delay(1e3).fadeOut("slow");
                                 }
                                 e(".wp_content_generatorLoaderPer").text("100%"),
                                     e(".wp_content_generatorLoaderWrpper").attr("class", "wp_content_generatorLoaderWrpper c100 blue"),
@@ -138,12 +143,12 @@
                 alert('Por favor, introduce al menos un ASIN');
                 return false;
             }
-            
+
             // Dividir ASINs y procesar uno por uno
             var asins_array = asins.split(/\s+/).filter(asin => asin.length > 0);
             e(".remaining_posts").val(asins_array.length);
             e(".remaining_asins").val(asins_array.join(" "));
-            
+
             // Procesar el primer ASIN
             processNextAsin(asins_array);
             return false;
@@ -157,7 +162,7 @@
 
             var currentAsin = asins_array[0];
             var remainingAsins = asins_array.slice(1).join(" ");
-            
+
             e(".remaining_asins").val(remainingAsins);
             e(".remaining_posts").val(asins_array.length - 1);
             e(".generation_status").html("Procesando el ASIN: " + currentAsin);
@@ -221,10 +226,15 @@
                                     e(".wp_content_generatorLoaderWrpper").addClass("p" + d),
                                     n(o);
                             } else if ("success" === a.status && 0 == a.remaining_posts) {
+                                var messageElement = e(".wp_content_generator-success-msg");
+                                if (messageElement.length === 0) {
+                                    e("body").append('<div class="wp_content_generator-success-msg"></div>');
+                                    messageElement = e(".wp_content_generator-success-msg");
+                                }
                                 if (a.message) {
-                                    e(".wp_content_generator-success-msg").html(a.message).fadeIn("fast").delay(1e3).fadeOut("slow");
+                                    messageElement.html(a.message).fadeIn("fast").delay(1e3).fadeOut("slow");
                                 } else {
-                                    e(".wp_content_generator-success-msg").html("Posts generated successfully.").fadeIn("fast").delay(1e3).fadeOut("slow");
+                                    messageElement.html("Posts generated successfully.").fadeIn("fast").delay(1e3).fadeOut("slow");
                                 }
                                 e(".wp_content_generatorLoaderPer").text("100%"),
                                     e(".wp_content_generatorLoaderWrpper").attr("class", "wp_content_generatorLoaderWrpper c100 blue"),
@@ -291,10 +301,15 @@
 									e(".wp_content_generatorLoaderWrpper").addClass("p" + d),
 									n(o);
 							} else if ("success" === a.status && 0 == a.remaining_posts) {
+                                var messageElement = e(".wp_content_generator-success-msg");
+                                if (messageElement.length === 0) {
+                                    e("body").append('<div class="wp_content_generator-success-msg"></div>');
+                                    messageElement = e(".wp_content_generator-success-msg");
+                                }
                                 if (a.message) {
-                                    e(".wp_content_generator-success-msg").html(a.message).fadeIn("fast").delay(1e3).fadeOut("slow");
+                                    messageElement.html(a.message).fadeIn("fast").delay(1e3).fadeOut("slow");
                                 } else {
-                                    e(".wp_content_generator-success-msg").html("Posts generated successfully.").fadeIn("fast").delay(1e3).fadeOut("slow");
+                                    messageElement.html("Posts generated successfully.").fadeIn("fast").delay(1e3).fadeOut("slow");
                                 }
                                 e(".wp_content_generatorLoaderPer").text("100%"),
                                     e(".wp_content_generatorLoaderWrpper").attr("class", "wp_content_generatorLoaderWrpper c100 blue"),
@@ -347,10 +362,15 @@
 									e(".wp_content_generatorLoaderWrpper").addClass("p" + d),
 									n(o);
 							} else if ("success" === a.status && 0 == a.remaining_products) {
+                                var messageElement = e(".wp_content_generator-success-msg");
+                                if (messageElement.length === 0) {
+                                    e("body").append('<div class="wp_content_generator-success-msg"></div>');
+                                    messageElement = e(".wp_content_generator-success-msg");
+                                }
                                 if (a.message) {
-                                    e(".wp_content_generator-success-msg").html(a.message).fadeIn("fast").delay(1e3).fadeOut("slow");
+                                    messageElement.html(a.message).fadeIn("fast").delay(1e3).fadeOut("slow");
                                 } else {
-                                    e(".wp_content_generator-success-msg").html("Products generated successfully.").fadeIn("fast").delay(1e3).fadeOut("slow");
+                                    messageElement.html("Products generated successfully.").fadeIn("fast").delay(1e3).fadeOut("slow");
                                 }
 								e(".wp_content_generatorLoaderPer").text("100%"),
 									e(".wp_content_generatorLoaderWrpper").attr("class", "wp_content_generatorLoaderWrpper c100 blue"),
@@ -396,10 +416,15 @@
 									e(".wp_content_generatorLoaderWrpper").addClass("p" + d),
 									n(o);
 							} else if ("success" === a.status && 0 == a.remaining_users) {
+                                var messageElement = e(".wp_content_generator-success-msg");
+                                if (messageElement.length === 0) {
+                                    e("body").append('<div class="wp_content_generator-success-msg"></div>');
+                                    messageElement = e(".wp_content_generator-success-msg");
+                                }
                                 if (a.message) {
-                                    e(".wp_content_generator-success-msg").html(a.message).fadeIn("fast").delay(1e3).fadeOut("slow");
+                                    messageElement.html(a.message).fadeIn("fast").delay(1e3).fadeOut("slow");
                                 } else {
-                                    e(".wp_content_generator-success-msg").html("Users generated successfully.").fadeIn("fast").delay(1e3).fadeOut("slow");
+                                    messageElement.html("Users generated successfully.").fadeIn("fast").delay(1e3).fadeOut("slow");
                                 }
 								e(".wp_content_generatorLoaderPer").text("100%"),
 									e(".wp_content_generatorLoaderWrpper").attr("class", "wp_content_generatorLoaderWrpper c100 blue"),
