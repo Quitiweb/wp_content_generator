@@ -1242,3 +1242,26 @@ a.wp_content_generator-btn.wp_content_generator-btnRed:hover {
     display: none;
     z-index: 9999;
 }
+
+.generation_status {
+    position: fixed;
+    top: 50px;
+    right: 20px;
+    background: #2196F3;
+    color: white;
+    padding: 15px;
+    border-radius: 4px;
+    z-index: 9999;
+}
+
+.wp_content_generator-info-msg {
+    position: fixed;
+    top: 50px;
+    right: 20px;
+    background: #2196F3;
+    color: white;
+    padding: 15px;
+    border-radius: 4px;
+    display: none;
+    z-index: 9999;
+}
