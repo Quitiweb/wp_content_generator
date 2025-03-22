@@ -240,7 +240,7 @@ function wp_content_generatorGenerateAWSPosts(
         return 'error: Error decodificando respuesta de la API';
     }
     if (isset($data['error'])) {
-        return 'error:' . $data['message'];
+        return 'error: ' . $data['message']; // Aquí manejamos el error de la API
     }
     $title = $data['title'];
     $description = $data['description'];

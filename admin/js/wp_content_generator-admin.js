@@ -160,7 +160,7 @@
             
             e(".remaining_asins").val(remainingAsins);
             e(".remaining_posts").val(asins_array.length - 1);
-            e(".generation_status").html("Procesando ASIN: " + currentAsin);
+            e(".generation_status").html("Procesando el ASIN: " + currentAsin);
 
             var formData = e("#wp_content_generatorGenAWSPostForm").serialize();
             e.ajax({
@@ -169,7 +169,9 @@
                 data: formData,
                 success: function(response) {
                     if (response.status === "success") {
-                        // Procesar siguiente ASIN
+                        e(".generation_status").html("Código ASIN " + currentAsin + " procesado correctamente.");
+                        // Pasar al siguiente ASIN
+                        e(".generation_status").append("<br>Pasando al siguiente ASIN.");
                         processNextAsin(asins_array.slice(1));
                     } else {
                         e(".generation_status").html("Error: " + response.message);
