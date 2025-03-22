@@ -165,7 +165,9 @@
 
             e(".remaining_asins").val(remainingAsins);
             e(".remaining_posts").val(asins_array.length - 1);
-            e(".generation_status").html("Procesando el ASIN: " + currentAsin);
+            var statusMsg = e(".wp_content_generator-info-msg");
+            statusMsg.html("Procesando el ASIN: " + currentAsin).fadeIn("fast");
+            console.log("Procesando ASIN:", currentAsin);
 
             var formData = e("#wp_content_generatorGenAWSPostForm").serialize();
             e.ajax({
@@ -174,16 +176,19 @@
                 data: formData,
                 success: function(response) {
                     if (response.status === "success") {
-                        e(".generation_status").html("Código ASIN " + currentAsin + " procesado correctamente.");
+                        statusMsg.html("Código ASIN " + currentAsin + " procesado correctamente.").fadeIn("fast").delay(2000);
+                        console.log("ASIN procesado:", currentAsin);
                         // Pasar al siguiente ASIN
-                        e(".generation_status").append("<br>Pasando al siguiente ASIN.");
+                        statusMsg.html("Pasando al siguiente ASIN...").fadeIn("fast");
                         processNextAsin(asins_array.slice(1));
                     } else {
-                        e(".generation_status").html("Error: " + response.message);
+                        e(".wp_content_generator-error-msg").html("Error: " + response.message).fadeIn("fast").delay(3000).fadeOut("slow");
+                        console.error("Error:", response.message);
                     }
                 },
                 error: function() {
-                    e(".generation_status").html("Error en la llamada AJAX");
+                    e(".wp_content_generator-error-msg").html("Error en la llamada AJAX").fadeIn("fast").delay(3000).fadeOut("slow");
+                    console.error("Error en la llamada AJAX");
                 }
             });
         }(this);
