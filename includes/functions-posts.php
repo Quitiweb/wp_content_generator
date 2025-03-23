@@ -128,9 +128,15 @@ function callAPI($url, $category, $asin) {
             throw new Exception('API URL is not configured');
         }
 
-        $api_url = sprintf("%s?%s", $url, http_build_query(array("category" => $category)));
-        if($asin) {
-            $api_url .= sprintf("&asin=%s", $asin);
+        // Si la URL contiene "aws", solo incluimos el ASIN
+        if (strpos($url, '/aws/') !== false) {
+            $api_url = $url . '?' . http_build_query(array('asin' => $asin));
+        } else {
+            // Para otras llamadas, incluimos la categoría
+            $api_url = sprintf("%s?%s", $url, http_build_query(array("category" => $category)));
+            if($asin) {
+                $api_url .= sprintf("&asin=%s", $asin);
+            }
         }
         
         error_log('API URL being called: ' . $api_url);
@@ -229,7 +235,7 @@ function wp_content_generatorGeneratePosts(
 */
 function wp_content_generatorGenerateAWSPosts(
     array $categories,
-    $category='software',
+    $category='software', // Mantener este parámetro ya que se usa para la categoría principal
     $post_user=1,
     $asin='',
     $postDateFrom='',
@@ -264,6 +270,12 @@ function wp_content_generatorGenerateAWSPosts(
     }
     $title = $data['title'];
     $description = $data['description'];
+
+    // Asegurarnos de que la categoría principal esté incluida
+    $mainCategoryId = get_cat_ID($category);
+    if ($mainCategoryId && !in_array($mainCategoryId, $categories)) {
+        array_push($categories, $mainCategoryId);
+    }
 
     // Create post
     $postDate = wp_content_generatorRandomDate($postDateFrom,$postDateTo);
