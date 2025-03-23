@@ -357,24 +357,23 @@ function wp_content_generatorAjaxGenAWSPosts() {
         $categories = isset($_POST['wp_content_generator-categories']) ? $_POST['wp_content_generator-categories'] : array();
         $post_user = sanitize_text_field($_POST['wp_content_generator-user']);
         $remaining_asins = sanitize_text_field($_POST['remaining_asins']);
+
+        // Validar y procesar ASINs
+        $asins_array = array_filter(preg_split('/\s+/', trim($remaining_asins)), 'strlen');
         
-        if (empty($remaining_asins)) {
+        if (empty($asins_array)) {
             throw new Exception('No ASINs provided');
         }
 
-        // Procesar ASINs
-        $asins_array = preg_split('/\s+/', trim($remaining_asins));
-        $current_asin = array_shift($asins_array); // Obtener el ASIN actual
-        $remaining_asins = implode(" ", $asins_array); // Actualizar remaining_asins
-        $remaining_posts = count($asins_array); // Actualizar remaining_posts
-
-        if (empty($current_asin)) {
-            throw new Exception('Invalid ASIN');
-        }
+        // Obtener el ASIN actual y actualizar los restantes
+        $current_asin = array_shift($asins_array);
+        $remaining_asins = implode(" ", $asins_array);
+        $remaining_posts = count($asins_array);
 
         $postFromDate = sanitize_text_field($_POST['wp_content_generator-post_from']);
         $postToDate = sanitize_text_field($_POST['wp_content_generator-post_to']);
 
+        // Procesar el ASIN actual
         $generationStatus = wp_content_generatorGenerateAWSPosts(
             $categories,
             $category,
@@ -388,13 +387,18 @@ function wp_content_generatorAjaxGenAWSPosts() {
             throw new Exception(substr($generationStatus, 6));
         }
 
+        // Preparar respuesta
         $response = array(
             'status' => 'success',
             'message' => 'Post for ASIN ' . $current_asin . ' generated successfully.',
             'remaining_posts' => $remaining_posts,
             'remaining_asins' => $remaining_asins,
             'current_asin' => $current_asin,
-            'debug' => 'Processed ASIN: ' . $current_asin
+            'debug' => array(
+                'current_asin' => $current_asin,
+                'remaining_count' => $remaining_posts,
+                'remaining_asins' => $asins_array
+            )
         );
 
         echo json_encode($response);
@@ -404,7 +408,11 @@ function wp_content_generatorAjaxGenAWSPosts() {
         echo json_encode(array(
             'status' => 'error',
             'message' => $e->getMessage(),
-            'debug' => 'Error processing ASIN: ' . $current_asin
+            'debug' => array(
+                'error' => $e->getMessage(),
+                'current_asin' => $current_asin,
+                'trace' => $e->getTraceAsString()
+            )
         ));
     }
     die();
