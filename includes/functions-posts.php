@@ -171,9 +171,6 @@ function wp_content_generatorGeneratePosts(
         $postDateTo = date("Y-m-d");
     }
     $host = get_option('wp_content_generator_api_url');
-    // $host = 'http://ec2-15-188-189-171.eu-west-3.compute.amazonaws.com';
-    // $host = 'http://127.0.0.1:8000';
-    // $host = 'https://post.quitiweb.com';
     $base_url = sprintf("%s/%s", $host, 'post/generate/');
     $get_data = callAPI($base_url, $category, false);
 
@@ -227,9 +224,6 @@ function wp_content_generatorGenerateAWSPosts(
         $postDateTo = date("Y-m-d");
     }
     $host = get_option('wp_content_generator_api_url');
-    // $host = 'http://ec2-15-188-189-171.eu-west-3.compute.amazonaws.com';
-    // $host = 'http://127.0.0.1:8000';
-    // $host = 'https://post.quitiweb.com';
     $base_url = sprintf("%s/%s", $host, 'post/aws/');
     sleep(2); // Añadimos una pequeña pausa entre llamadas
     $get_data = callAPI($base_url, $category, $asin);
