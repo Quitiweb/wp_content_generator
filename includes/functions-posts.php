@@ -336,19 +336,26 @@ function wp_content_generatorAjaxGenAWSPosts () {
             );
 
             if (strpos($generationStatus, 'error:') === 0) {
-                echo json_encode(array('status' => 'error', 'message' => substr($generationStatus, 6)));
+                echo json_encode(array(
+                    'status' => 'error',
+                    'message' => substr($generationStatus, 6),
+                    'debug' => 'Error processing ASIN: ' . $current_asin
+                ));
                 die();
             }
         }
     }
 
-    echo json_encode(array(
-        'status' => 'success', 
-        'message' => 'Post generated successfully.', 
+    $response = array(
+        'status' => 'success',
+        'message' => 'Post for ASIN ' . $current_asin . ' generated successfully.',
         'remaining_posts' => $remaining_posts,
         'remaining_asins' => $remaining_asins,
-        'current_asin' => $current_asin
-    ));
+        'current_asin' => $current_asin,
+        'debug' => 'Processed ASIN: ' . $current_asin
+    );
+
+    echo json_encode($response);
     die();
 }
 

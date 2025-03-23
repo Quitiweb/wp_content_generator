@@ -3,13 +3,27 @@
     e(function () {
         // Función auxiliar para mostrar mensajes
         function showMessage(type, message) {
+            console.log('Showing message:', type, message); // Debug log
             var messageClass = type === 'error' ? 'wp_content_generator-error-msg' : 'wp_content_generator-success-msg';
+
+            // Asegurarse de que el contenedor del mensaje existe
+            if (e('.' + messageClass).length === 0) {
+                e('body').append('<div class="' + messageClass + '"></div>');
+            }
+
             var messageHtml = '<div class="message-container">' +
                             '<span class="message-text">' + message + '</span>' +
                             '<span class="close-message">×</span>' +
                             '</div>';
 
-            e('.' + messageClass).html(messageHtml).show();
+            e('.' + messageClass)
+                .html(messageHtml)
+                .show()
+                .delay(3000) // Mostrar por 3 segundos
+                .fadeOut('slow');
+
+            // Debug log
+            console.log('Message container:', e('.' + messageClass));
         }
 
         // Manejador para cerrar mensajes
@@ -171,8 +185,11 @@
         });
 
         function processNextAsin(asins_array) {
+            console.log('Processing ASINs:', asins_array); // Debug log
+
             if (asins_array.length === 0) {
                 showMessage('success', '¡Todos los ASINs han sido procesados!');
+                e(".dcsLoader").hide();
                 return;
             }
 

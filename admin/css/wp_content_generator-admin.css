@@ -1268,3 +1268,32 @@ a.wp_content_generator-btn.wp_content_generator-btnRed:hover {
     border-radius: 4px;
     z-index: 9999;
 }
+
+.wp_content_generator-success-msg,
+.wp_content_generator-error-msg {
+    position: fixed;
+    top: 32px;
+    right: 20px;
+    z-index: 100000;
+    min-width: 300px;
+    max-width: 90%;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+
+.message-container {
+    padding: 15px 20px;
+    border-radius: 4px;
+    margin: 10px 0;
+    animation: slideIn 0.5s ease-out;
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
