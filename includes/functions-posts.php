@@ -362,11 +362,21 @@ function wp_content_generatorAjaxGenAWSPosts() {
         $asins_array = array_filter(preg_split('/\s+/', trim($remaining_asins)), 'strlen');
         
         if (empty($asins_array)) {
-            throw new Exception('No ASINs provided');
+            // En lugar de lanzar una excepción, enviamos un mensaje de finalización
+            echo json_encode(array(
+                'status' => 'success',
+                'message' => '¡Todos los ASINs han sido procesados!',
+                'remaining_posts' => 0,
+                'remaining_asins' => '',
+                'is_complete' => true
+            ));
+            die();
         }
 
-        // NO actualizamos remaining_asins todavía
-        $current_asin = $asins_array[0]; // Obtenemos el ASIN actual sin eliminarlo
+        // Obtener el ASIN actual
+        $current_asin = array_shift($asins_array);
+        $remaining_asins = implode(" ", $asins_array);
+        $remaining_posts = count($asins_array);
         
         $postFromDate = sanitize_text_field($_POST['wp_content_generator-post_from']);
         $postToDate = sanitize_text_field($_POST['wp_content_generator-post_to']);
@@ -385,11 +395,6 @@ function wp_content_generatorAjaxGenAWSPosts() {
             throw new Exception(substr($generationStatus, 6));
         }
 
-        // Solo DESPUÉS de procesar exitosamente, actualizamos la lista de ASINs restantes
-        array_shift($asins_array); // Ahora sí eliminamos el ASIN procesado
-        $remaining_asins = implode(" ", $asins_array);
-        $remaining_posts = count($asins_array);
-
         error_log('Successfully processed ASIN: ' . $current_asin);
         error_log('Remaining ASINs: ' . $remaining_asins);
         error_log('Remaining count: ' . $remaining_posts);
@@ -401,6 +406,7 @@ function wp_content_generatorAjaxGenAWSPosts() {
             'remaining_posts' => $remaining_posts,
             'remaining_asins' => $remaining_asins,
             'current_asin' => $current_asin,
+            'is_complete' => ($remaining_posts === 0),
             'debug' => array(
                 'processed_asin' => $current_asin,
                 'remaining_count' => $remaining_posts,

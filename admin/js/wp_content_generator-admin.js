@@ -182,22 +182,13 @@
         });
 
         function processNextAsin(asins_array) {
-            console.log('Processing ASINs:', asins_array); // Debug log
+            console.log('Processing ASINs:', asins_array);
 
             if (!asins_array || asins_array.length === 0) {
                 showMessage('success', '¡Todos los ASINs han sido procesados!');
                 e(".dcsLoader").hide();
                 return;
             }
-
-            var currentAsin = asins_array[0];
-            var remainingAsins = asins_array.slice(1).join(" ");
-
-            e(".remaining_asins").val(remainingAsins);
-            e(".remaining_posts").val(asins_array.length - 1);
-            e(".wp_content_generator-info-msg")
-                .html("Procesando el ASIN: " + currentAsin)
-                .fadeIn("fast");
 
             var formData = e("#wp_content_generatorGenAWSPostForm").serialize();
             e.ajax({
@@ -206,7 +197,7 @@
                 data: formData,
                 dataType: 'json',
                 success: function(response) {
-                    console.log('API Response:', response); // Debug log
+                    console.log('API Response:', response);
                     
                     if (response.error) {
                         showMessage('error', "Error: " + response.message);
@@ -214,17 +205,26 @@
                     }
                     
                     if (response.status === "success") {
+                        if (response.is_complete) {
+                            showMessage('success', '¡Todos los ASINs han sido procesados!');
+                            e(".dcsLoader").hide();
+                            return;
+                        }
+
                         e(".wp_content_generator-info-msg")
-                            .html("ASIN " + currentAsin + " procesado correctamente.")
+                            .html("ASIN " + response.current_asin + " procesado correctamente.")
                             .fadeIn("fast");
-                        processNextAsin(asins_array.slice(1));
+
+                        // Actualizar remaining_asins en el formulario
+                        e(".remaining_asins").val(response.remaining_asins);
+                        processNextAsin(response.remaining_asins.split(/\s+/).filter(Boolean));
                     } else {
                         showMessage('error', response.message || "Error desconocido al procesar ASIN");
                     }
                 },
                 error: function(jqXHR, textStatus, errorThrown) {
-                    console.error('AJAX Error:', textStatus, errorThrown); // Debug log
-                    showMessage('error', "Error de conexión al procesar ASIN " + currentAsin + ": " + textStatus);
+                    console.error('AJAX Error:', textStatus, errorThrown);
+                    showMessage('error', "Error de conexión al procesar ASINs: " + textStatus);
                 }
             });
         }
