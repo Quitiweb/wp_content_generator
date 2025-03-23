@@ -47,10 +47,10 @@
 	        <th scope="row">Posts date range</th>
 	        <td>
 	        	<label>From</label>
-	        	<input type="date" name="wp_content_generator-post_from" class="wp_content_generator-post_from"  placeholder="Date Range From" value="<?=date("Y/m/d")?>" />
+				<input type="date" name="wp_content_generator-post_from" class="wp_content_generator-post_from"  placeholder="Date Range From" value="<?=date("Y-m-d")?>" />
 
 	        	<label>To</label>
-	        	<input type="date" name="wp_content_generator-post_to" class="wp_content_generator-post_to"  placeholder="Date Range To" value="<?=date("Y/m/d")?>" />
+				<input type="date" name="wp_content_generator-post_to" class="wp_content_generator-post_to"  placeholder="Date Range To" value="<?=date("Y-m-d")?>" />
 
 	        	<p class="description">Choose the from and to date. The Plugin will pick any random date from this range to use as a post publish date</p>
 	        </td>

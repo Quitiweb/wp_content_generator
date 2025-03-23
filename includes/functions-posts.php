@@ -216,6 +216,10 @@ function wp_content_generatorGenerateAWSPosts(
     $postDateFrom='',
     $postDateTo=''
 ){
+    if (empty($asin)) {
+        return 'error: No ASIN provided';
+    }
+
     $posttype = 'post';
     if($postDateFrom == ''){
         $postDateFrom = date("Y-m-d");
@@ -227,14 +231,17 @@ function wp_content_generatorGenerateAWSPosts(
     $base_url = sprintf("%s/%s", $host, 'post/aws/');
     sleep(2); // Añadimos una pequeña pausa entre llamadas
     $get_data = callAPI($base_url, $category, $asin);
+    if (!$get_data) {
+        return 'error: API call failed for ASIN: ' . $asin;
+    }
 
     // Decodifica los datos JSON obtenidos
     $data = json_decode($get_data, true);
     if (!$get_data || json_last_error() !== JSON_ERROR_NONE) {
-        return 'error: Error decodificando respuesta de la API';
+        return 'error: Failed to decode API response for ASIN: ' . $asin;
     }
     if (isset($data['error'])) {
-        return 'error: ' . $data['message']; // Aquí manejamos el error de la API
+        return 'error: API returned error for ASIN ' . $asin . ': ' . $data['message'];
     }
     $title = $data['title'];
     $description = $data['description'];
@@ -305,57 +312,71 @@ add_action("wp_ajax_wp_content_generatorAjaxGenPosts", "wp_content_generatorAjax
 /**
  * The AJAX function for the AWS Post Generator
  */
-function wp_content_generatorAjaxGenAWSPosts () {
-    if ( !current_user_can('manage_options') || !wp_verify_nonce( $_POST['nonce'], 'wpdcg-ajax-nonce' ) ) {
-        echo json_encode(array('status' => 'error', 'message' => 'Unauthorized Access.') );
+function wp_content_generatorAjaxGenAWSPosts() {
+    if (!current_user_can('manage_options') || !wp_verify_nonce($_POST['nonce'], 'wpdcg-ajax-nonce')) {
+        echo json_encode(array('status' => 'error', 'message' => 'Unauthorized Access.'));
         die();
     }
-    $category = sanitize_text_field($_POST['wp_content_generator-category']);
-    $categories = $_POST['wp_content_generator-categories'];
-    $post_user = sanitize_text_field($_POST['wp_content_generator-user']);
-    $remaining_asins = sanitize_text_field($_POST['remaining_asins']);
-    $remaining_posts = sanitize_text_field($_POST['remaining_posts']);
 
-    if($remaining_posts >= 1 && !empty($remaining_asins)){
-        $postFromDate = sanitize_text_field($_POST['wp_content_generator-post_from']);
-        $postToDate = sanitize_text_field($_POST['wp_content_generator-post_to']);
-        
-        $asins_array = preg_split('/\s+/', trim($remaining_asins));
-        $current_asin = array_shift($asins_array); // Get and remove first element
-        $remaining_asins = implode(" ", $asins_array);
-        $remaining_posts = count($asins_array);
+    // Inicializar variables
+    $current_asin = '';
+    $remaining_posts = 0;
+    $remaining_asins = '';
 
-        if($current_asin) {
-            $generationStatus = wp_content_generatorGenerateAWSPosts(
-                $categories,
-                $category,
-                $post_user,
-                $current_asin,
-                $postFromDate,
-                $postToDate
-            );
+    try {
+        $category = sanitize_text_field($_POST['wp_content_generator-category']);
+        $categories = isset($_POST['wp_content_generator-categories']) ? $_POST['wp_content_generator-categories'] : array();
+        $post_user = sanitize_text_field($_POST['wp_content_generator-user']);
+        $remaining_asins = sanitize_text_field($_POST['remaining_asins']);
+        $remaining_posts = sanitize_text_field($_POST['remaining_posts']);
 
-            if (strpos($generationStatus, 'error:') === 0) {
-                echo json_encode(array(
-                    'status' => 'error',
-                    'message' => substr($generationStatus, 6),
-                    'debug' => 'Error processing ASIN: ' . $current_asin
-                ));
-                die();
+        if (empty($remaining_asins)) {
+            throw new Exception('No ASINs provided');
+        }
+
+        if ($remaining_posts >= 1 && !empty($remaining_asins)) {
+            $postFromDate = sanitize_text_field($_POST['wp_content_generator-post_from']);
+            $postToDate = sanitize_text_field($_POST['wp_content_generator-post_to']);
+
+            $asins_array = preg_split('/\s+/', trim($remaining_asins));
+            $current_asin = array_shift($asins_array);
+            $remaining_asins = implode(" ", $asins_array);
+            $remaining_posts = count($asins_array);
+
+            if ($current_asin) {
+                $generationStatus = wp_content_generatorGenerateAWSPosts(
+                    $categories,
+                    $category,
+                    $post_user,
+                    $current_asin,
+                    $postFromDate,
+                    $postToDate
+                );
+
+                if (strpos($generationStatus, 'error:') === 0) {
+                    throw new Exception(substr($generationStatus, 6));
+                }
             }
         }
+
+        $response = array(
+            'status' => 'success',
+            'message' => 'Post for ASIN ' . $current_asin . ' generated successfully.',
+            'remaining_posts' => $remaining_posts,
+            'remaining_asins' => $remaining_asins,
+            'current_asin' => $current_asin,
+            'debug' => 'Processed ASIN: ' . $current_asin
+        );
+
+        echo json_encode($response);
+
+    } catch (Exception $e) {
+        echo json_encode(array(
+            'status' => 'error',
+            'message' => $e->getMessage(),
+            'debug' => 'Error processing ASIN: ' . $current_asin
+        ));
     }
-
-    $response = array(
-        'status' => 'success',
-        'message' => 'Post for ASIN ' . $current_asin . ' generated successfully.',
-        'remaining_posts' => $remaining_posts,
-        'remaining_asins' => $remaining_asins,
-        'current_asin' => $current_asin,
-        'debug' => 'Processed ASIN: ' . $current_asin
-    );
-
-    echo json_encode($response);
     die();
 }
 
