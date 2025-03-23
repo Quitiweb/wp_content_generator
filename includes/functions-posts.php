@@ -365,11 +365,9 @@ function wp_content_generatorAjaxGenAWSPosts() {
             throw new Exception('No ASINs provided');
         }
 
-        // Obtener el ASIN actual y actualizar los restantes
-        $current_asin = array_shift($asins_array);
-        $remaining_asins = implode(" ", $asins_array);
-        $remaining_posts = count($asins_array);
-
+        // NO actualizamos remaining_asins todavía
+        $current_asin = $asins_array[0]; // Obtenemos el ASIN actual sin eliminarlo
+        
         $postFromDate = sanitize_text_field($_POST['wp_content_generator-post_from']);
         $postToDate = sanitize_text_field($_POST['wp_content_generator-post_to']);
 
@@ -387,6 +385,15 @@ function wp_content_generatorAjaxGenAWSPosts() {
             throw new Exception(substr($generationStatus, 6));
         }
 
+        // Solo DESPUÉS de procesar exitosamente, actualizamos la lista de ASINs restantes
+        array_shift($asins_array); // Ahora sí eliminamos el ASIN procesado
+        $remaining_asins = implode(" ", $asins_array);
+        $remaining_posts = count($asins_array);
+
+        error_log('Successfully processed ASIN: ' . $current_asin);
+        error_log('Remaining ASINs: ' . $remaining_asins);
+        error_log('Remaining count: ' . $remaining_posts);
+
         // Preparar respuesta
         $response = array(
             'status' => 'success',
@@ -395,7 +402,7 @@ function wp_content_generatorAjaxGenAWSPosts() {
             'remaining_asins' => $remaining_asins,
             'current_asin' => $current_asin,
             'debug' => array(
-                'current_asin' => $current_asin,
+                'processed_asin' => $current_asin,
                 'remaining_count' => $remaining_posts,
                 'remaining_asins' => $asins_array
             )
