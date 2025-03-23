@@ -96,15 +96,19 @@ function run_wp_content_generator() {
 run_wp_content_generator();
 
 /**
- * Load text domain for translations
+ * Load translations after WordPress is fully loaded
  */
-function wp_content_generator_init() {
-    // Asegurarse de que esto se ejecute después de que WordPress esté completamente cargado
-    if (did_action('init') || doing_action('init')) {
-        load_plugin_textdomain('wp_content_generator', false, dirname(plugin_basename(__FILE__)) . '/languages/');
-    }
+function wp_content_generator_load_textdomain() {
+    load_plugin_textdomain(
+        'wp_content_generator',
+        false,
+        dirname(plugin_basename(__FILE__)) . '/languages'
+    );
 }
-add_action('init', 'wp_content_generator_init', 15); // Mayor prioridad para asegurar que se carga después
+
+// Remove previous init hook and add with plugins_loaded instead
+remove_action('init', 'wp_content_generator_init');
+add_action('plugins_loaded', 'wp_content_generator_load_textdomain');
 
 /**
  * Disable jQuery Migrate warnings

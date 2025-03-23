@@ -182,6 +182,8 @@
         });
 
         function processNextAsin(asins_array) {
+            console.log('Processing ASINs:', asins_array); // Debug log
+
             if (!asins_array || asins_array.length === 0) {
                 showMessage('success', '¡Todos los ASINs han sido procesados!');
                 e(".dcsLoader").hide();
@@ -193,23 +195,36 @@
 
             e(".remaining_asins").val(remainingAsins);
             e(".remaining_posts").val(asins_array.length - 1);
-            e(".wp_content_generator-info-msg").html("Procesando el ASIN: " + currentAsin).fadeIn("fast");
+            e(".wp_content_generator-info-msg")
+                .html("Procesando el ASIN: " + currentAsin)
+                .fadeIn("fast");
 
             var formData = e("#wp_content_generatorGenAWSPostForm").serialize();
             e.ajax({
                 url: wp_content_generator_backend_ajax_object.wp_content_generator_ajax_url,
                 type: "POST",
                 data: formData,
+                dataType: 'json',
                 success: function(response) {
+                    console.log('API Response:', response); // Debug log
+                    
+                    if (response.error) {
+                        showMessage('error', "Error: " + response.message);
+                        return;
+                    }
+                    
                     if (response.status === "success") {
-                        e(".wp_content_generator-info-msg").html("ASIN " + currentAsin + " procesado correctamente.").fadeIn("fast");
+                        e(".wp_content_generator-info-msg")
+                            .html("ASIN " + currentAsin + " procesado correctamente.")
+                            .fadeIn("fast");
                         processNextAsin(asins_array.slice(1));
                     } else {
-                        showMessage('error', "Error: " + response.message);
+                        showMessage('error', response.message || "Error desconocido al procesar ASIN");
                     }
                 },
-                error: function() {
-                    showMessage('error', "Error en la conexión al procesar ASIN: " + currentAsin);
+                error: function(jqXHR, textStatus, errorThrown) {
+                    console.error('AJAX Error:', textStatus, errorThrown); // Debug log
+                    showMessage('error', "Error de conexión al procesar ASIN " + currentAsin + ": " + textStatus);
                 }
             });
         }

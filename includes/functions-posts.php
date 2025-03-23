@@ -122,33 +122,52 @@ function wp_content_generatorGetTaxonomies($post_type='post'){
 /**
  * API Calls general function
  */
-function callAPI($url, $category, $asin){
-    // URL de la API que devuelve el JSON con los datos de la entrada
-    // Agregamos al endpoint de Amazon si viene el ASIN del formulario
-    $api_url = sprintf("%s?%s", $url, http_build_query(array("category" => $category)));
-    if($asin){
-        $api_url .= sprintf("&asin=%s", $asin);
+function callAPI($url, $category, $asin) {
+    try {
+        if (empty($url)) {
+            throw new Exception('API URL is not configured');
+        }
+
+        $api_url = sprintf("%s?%s", $url, http_build_query(array("category" => $category)));
+        if($asin) {
+            $api_url .= sprintf("&asin=%s", $asin);
+        }
+        
+        error_log('API URL being called: ' . $api_url);
+
+        $api_key = get_option('wp_content_generator_api_key');
+        if (empty($api_key)) {
+            throw new Exception('API key is not configured');
+        }
+
+        $authorization = "Authorization: Bearer " . $api_key;
+        
+        $curl = curl_init();
+        curl_setopt($curl, CURLOPT_URL, $api_url);
+        curl_setopt($curl, CURLOPT_HTTPHEADER, array($authorization, 'Content-Type: application/json'));
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+        
+        $result = curl_exec($curl);
+        
+        if ($result === false) {
+            throw new Exception('cURL Error: ' . curl_error($curl));
+        }
+        
+        $httpCode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
+        if ($httpCode !== 200) {
+            throw new Exception('API returned HTTP code ' . $httpCode);
+        }
+        
+        curl_close($curl);
+        return $result;
+        
+    } catch (Exception $e) {
+        error_log('API Call Error: ' . $e->getMessage());
+        return json_encode(array(
+            'error' => true,
+            'message' => $e->getMessage()
+        ));
     }
-    
-    // Log the URL being constructed
-    error_log('API URL being called: ' . $api_url);
-
-    // Recupera el Token para autorizar las llamadas a la API
-    $api_key = get_option('wp_content_generator_api_key');
-    $authorization = "Authorization: Bearer " . $api_key;
-
-    // Comienza la llamada
-    // Obtiene los datos de la API en formato JSON
-    $curl = curl_init();
-    curl_setopt($curl, CURLOPT_URL, $api_url);
-    curl_setopt($curl, CURLOPT_HTTPHEADER, array($authorization, 'Content-Type: application/json'));
-    curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
-    $result = curl_exec($curl);
-
-    if(!$result){die("Connection Failure");}
-    curl_close($curl);
-
-    return $result;
  }
 
 /**
