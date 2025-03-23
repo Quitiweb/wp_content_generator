@@ -2,9 +2,6 @@
 <?php $wp_content_generatorPosCategory = wp_content_generatorGetCategory(); ?>
 <?php $wp_content_generatorPosCats = wp_content_generatorGetCategories(); ?>
 
-<div class="wp_content_generator-success-msg" style="display: none;"></div>
-<div class="wp_content_generator-error-msg" style="display: none;"></div>
-
 <form method="post" id="wp_content_generatorGenAWSPostForm" class="wp_content_generatorCol-9">
 	<input type="hidden" name="action" value="wp_content_generatorAjaxGenAWSPosts" />
 	<input type="hidden" name="remaining_posts" class="remaining_posts" value="" />
