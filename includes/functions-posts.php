@@ -349,45 +349,43 @@ function wp_content_generatorAjaxGenAWSPosts() {
         die();
     }
 
-    // Inicializar variables
-    $current_asin = '';
-    $remaining_posts = 0;
-    $remaining_asins = '';
-
     try {
+        // Inicializar variables
+        $current_asin = '';
+        
         $category = sanitize_text_field($_POST['wp_content_generator-category']);
         $categories = isset($_POST['wp_content_generator-categories']) ? $_POST['wp_content_generator-categories'] : array();
         $post_user = sanitize_text_field($_POST['wp_content_generator-user']);
         $remaining_asins = sanitize_text_field($_POST['remaining_asins']);
-        $remaining_posts = sanitize_text_field($_POST['remaining_posts']);
-
+        
         if (empty($remaining_asins)) {
             throw new Exception('No ASINs provided');
         }
 
-        if ($remaining_posts >= 1 && !empty($remaining_asins)) {
-            $postFromDate = sanitize_text_field($_POST['wp_content_generator-post_from']);
-            $postToDate = sanitize_text_field($_POST['wp_content_generator-post_to']);
+        // Procesar ASINs
+        $asins_array = preg_split('/\s+/', trim($remaining_asins));
+        $current_asin = array_shift($asins_array); // Obtener el ASIN actual
+        $remaining_asins = implode(" ", $asins_array); // Actualizar remaining_asins
+        $remaining_posts = count($asins_array); // Actualizar remaining_posts
 
-            $asins_array = preg_split('/\s+/', trim($remaining_asins));
-            $current_asin = array_shift($asins_array);
-            $remaining_asins = implode(" ", $asins_array);
-            $remaining_posts = count($asins_array);
+        if (empty($current_asin)) {
+            throw new Exception('Invalid ASIN');
+        }
 
-            if ($current_asin) {
-                $generationStatus = wp_content_generatorGenerateAWSPosts(
-                    $categories,
-                    $category,
-                    $post_user,
-                    $current_asin,
-                    $postFromDate,
-                    $postToDate
-                );
+        $postFromDate = sanitize_text_field($_POST['wp_content_generator-post_from']);
+        $postToDate = sanitize_text_field($_POST['wp_content_generator-post_to']);
 
-                if (strpos($generationStatus, 'error:') === 0) {
-                    throw new Exception(substr($generationStatus, 6));
-                }
-            }
+        $generationStatus = wp_content_generatorGenerateAWSPosts(
+            $categories,
+            $category,
+            $post_user,
+            $current_asin,
+            $postFromDate,
+            $postToDate
+        );
+
+        if (strpos($generationStatus, 'error:') === 0) {
+            throw new Exception(substr($generationStatus, 6));
         }
 
         $response = array(
@@ -402,6 +400,7 @@ function wp_content_generatorAjaxGenAWSPosts() {
         echo json_encode($response);
 
     } catch (Exception $e) {
+        error_log('WP Content Generator Error: ' . $e->getMessage());
         echo json_encode(array(
             'status' => 'error',
             'message' => $e->getMessage(),
