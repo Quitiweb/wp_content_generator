@@ -46,8 +46,7 @@ define("wp_content_generator_PLUGIN_DIR", plugin_basename( __DIR__ ));
 define("wp_content_generator_PLUGIN_NAME", "WP Content Generator");
 /**
  * The code that runs during plugin activation.
- * This action is documented in includes/class-wp_content_generator-activator.php
-*/
+ */
 function activate_wp_content_generator() {
     require_once plugin_dir_path( __FILE__ ) . "includes/class-wp_content_generator-activator.php";
     wp_content_generator_Activator::activate();
@@ -55,60 +54,47 @@ function activate_wp_content_generator() {
 
 /**
  * The code that runs during plugin deactivation.
- * This action is documented in includes/class-wp_content_generator-deactivator.php
-*/
+ */
 function deactivate_wp_content_generator() {
     require_once plugin_dir_path( __FILE__ ) . 'includes/class-wp_content_generator-deactivator.php';
     wp_content_generator_Deactivator::deactivate();
 }
 
-register_activation_hook( __FILE__ , 'activate_wp_content_generator' );
-register_deactivation_hook( __FILE__ , 'deactivate_wp_content_generator' );
-
 /**
-  * The core plugin class that is used to define internationalization,
-  * admin-specific hooks, and public-facing site hooks.
-*/
-require plugin_dir_path( __FILE__ ) . 'includes/class-wp_content_generator.php';
-
-add_action("wp_loaded", "wp_content_generatorAllLoaded");
-function wp_content_generatorAllLoaded(){
-    require_once plugin_dir_path( __FILE__ ) . 'includes/functions.php';
-    require_once plugin_dir_path( __FILE__ ) . 'includes/functions-posts.php';
-    // require_once plugin_dir_path( __FILE__ ) . 'includes/functions-test.php';
+ * Initialize plugin
+ */
+function wp_content_generator_init() {
+    // Load translations
+    if (did_action('init')) {
+        load_plugin_textdomain(
+            'wp_content_generator',
+            false,
+            dirname(plugin_basename(__FILE__)) . '/languages'
+        );
+    }
 }
 
-/**
- * Begins execution of the plugin.
- * 
- * Since everything within the plugin is registered via hooks,
- * then kicking off the plugin from this point in the file does
- * not affect the page life cycle.
- * 
- * @since 1.0.0
- */
-function run_wp_content_generator() {
+// Setup activation/deactivation hooks
+register_activation_hook(__FILE__, 'activate_wp_content_generator');
+register_deactivation_hook(__FILE__, 'deactivate_wp_content_generator');
 
+// Load core functionality after plugins are loaded
+add_action('plugins_loaded', function() {
+    require_once plugin_dir_path(__FILE__) . 'includes/class-wp_content_generator.php';
+    require_once plugin_dir_path(__FILE__) . 'includes/functions.php';
+    require_once plugin_dir_path(__FILE__) . 'includes/functions-posts.php';
+    
+    // Initialize the plugin
     $plugin = new wp_content_generator();
     $plugin->run();
+});
 
-}
-run_wp_content_generator();
+// Load translations at the right time
+add_action('init', 'wp_content_generator_init', 10);
 
-/**
- * Load translations after WordPress is fully loaded
- */
-function wp_content_generator_load_textdomain() {
-    load_plugin_textdomain(
-        'wp_content_generator',
-        false,
-        dirname(plugin_basename(__FILE__)) . '/languages'
-    );
-}
-
-// Remove previous init hook and add with plugins_loaded instead
-remove_action('init', 'wp_content_generator_init');
-add_action('plugins_loaded', 'wp_content_generator_load_textdomain');
+// Remove the old actions and functions that were loading too early
+remove_action('wp_loaded', 'wp_content_generatorAllLoaded');
+remove_action('plugins_loaded', 'wp_content_generator_load_textdomain');
 
 /**
  * Disable jQuery Migrate warnings
