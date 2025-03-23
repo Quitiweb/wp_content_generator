@@ -47,10 +47,11 @@ function wp_content_generator_add_toolbar_items($admin_bar){
     ));
 }
 
-function wp_content_generatorRandomDate($sStartDate, $sEndDate, $sFormat = 'Y-m-d H:i:s')
-{
-    $fMin = strtotime($sStartDate);
-    $fMax = strtotime($sEndDate);
-    $fVal = mt_rand($fMin, $fMax);
-    return date($sFormat, $fVal);
-}
+// Eliminar esta función ya que está duplicada
+// function wp_content_generatorRandomDate($sStartDate, $sEndDate, $sFormat = 'Y-m-d H:i:s')
+// {
+//     $fMin = strtotime($sStartDate);
+//     $fMax = strtotime($sEndDate);
+//     $fVal = mt_rand($fMin, $fMax);
+//     return date($sFormat, $fVal);
+// }

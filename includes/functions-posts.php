@@ -450,9 +450,16 @@ function save_wp_content_generator_api_url() {
     exit;
 }
 
-function wp_content_generatorRandomDate($postDateFrom, $postDateTo){
+/**
+ * Generate a random date between two dates
+ *
+ * @param string $postDateFrom Starting date
+ * @param string $postDateTo Ending date
+ * @return string Date in Y-m-d H:i:s format
+ */
+function wp_content_generatorRandomDate($postDateFrom, $postDateTo, $format = 'Y-m-d H:i:s') {
     $start = strtotime($postDateFrom);
     $end = strtotime($postDateTo);
     $timestamp = mt_rand($start, $end);
-    return date('Y-m-d H:i:s', $timestamp);
+    return date($format, $timestamp);
 }

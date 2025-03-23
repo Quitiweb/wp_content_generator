@@ -94,3 +94,11 @@ function run_wp_content_generator() {
 
 }
 run_wp_content_generator();
+
+/**
+ * Load text domain for translations
+ */
+function wp_content_generator_init() {
+    load_plugin_textdomain('wp_content_generator', false, dirname(plugin_basename(__FILE__)) . '/languages/');
+}
+add_action('init', 'wp_content_generator_init');
